@@ -4,8 +4,8 @@ import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, Dimensions, Sc
 import { Ionicons } from '@expo/vector-icons';
 
 
-import { SafeArea } from '../../app_infrastructure/utils/safe-area.component'
-import { Title, MediumText, SmallText } from '../../app_infrastructure/app_screens/botton.styles'
+import { SafeArea } from '../../../app_infrastructure/utils/safe-area.component'
+import { Title, MediumText, SmallText } from '../botton.styles'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -28,20 +28,21 @@ export const About = ({ navigation }) => {
                             </TouchableWithoutFeedback>
                         </View>
                         <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <Title>Developers</Title></View>
+                            <Title>DMA</Title></View>
 
                     </View>
                     <View style={styles.greetingContainer}>
                         <View style={styles.developer}>
 
                             <ScrollView showsVerticalScrollIndicator={false} style={{ height: '45%', width: '100%' }}>
-                                <Title>TecXact Inc Nig. Ltd</Title>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10 }}>TecXact fully known as Technology Exact is a mobile application and software development company whoose goal is to improve how Nigeria carry out daily business by providing affordable softwares for small business in Nigeria.</Text>
+                                <Title>Dr. Musa Adamu (DMA)</Title>
+                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, color: 'grey' }}>TecXact fully known as Technology Exact is a mobile application and software development company whoose goal is to improve how Nigeria carry out daily business by providing affordable softwares for small business in Nigeria.</Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, fontWeight: 'bold' }}>TecXact offer services such as: </Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Creating a static business websites</Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Creating a dynamic business website</Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Implementing card payment feature on business website for online purchases</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Managing of client website, Developing a business or company cross platform mobile application for staffs only</Text>
+                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Managing of client website</Text>
+                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Developing a business or company cross platform mobile application for staffs only</Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Developing a business or company cross platform mobile application for customer</Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} setting up business custom mail address e.g support@dma.org (More professional) instead of dma@gmail.com,</Text>
                                 <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Periodical client system maintenance</Text>

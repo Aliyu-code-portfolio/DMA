@@ -48,31 +48,23 @@ export const Plan = ({ navigation }) => {
                             <ScrollView style={{ height: '55%' }}>
                                 <View>
                                     <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, fontWeight: 'bold' }}>Estimated Population Size</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>Lafia: 445,300</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Obi: 201,100</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Awe: 152,600</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10 }}>Keana: 110,400</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>Lafia: 445,300</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10, color: 'grey' }}>Obi: 201,100</Text>
                                 </View>
                                 <View>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, fontWeight: 'bold' }}>Local Government Size</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>Lafia:  2,827 km²</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Awe: 2,573 km²</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Keana: 1,046 km²</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10 }}>Obi: 968.4 km²</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, fontWeight: 'bold', }}>Local Government Size</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>Lafia:  2,827 km²</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10, color: 'grey' }}>Obi: 968.4 km²</Text>
                                 </View>
                                 <View>
                                     <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, fontWeight: 'bold' }}>Estimated Eligibility by Age</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>Lafia:  140,832</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Awe: 45,975</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Keana: 33,925</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10 }}>Obi: 60,513</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>Lafia:  140,832</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10, color: 'grey' }}>Obi: 60,513</Text>
                                 </View>
                                 <View>
                                     <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, fontWeight: 'bold' }}>By Stronghold (green=strong, red=weak)</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'red' }}>Lafia</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3 }}>Awe</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, color: 'green' }}>Keana</Text>
-                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10, color: 'green' }}>Obi</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'red', color: 'grey' }}>Lafia</Text>
+                                    <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 3, marginBottom: 10, color: 'green', color: 'grey' }}>Obi</Text>
                                 </View>
                             </ScrollView>
                         </View>

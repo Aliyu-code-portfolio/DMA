@@ -11,8 +11,8 @@ const AboutStack = createStackNavigator();
 export const AboutDrawer = () => {
     return (
         <AboutStack.Navigator
-            headerMode="none"
             screenOptions={{
+                headerShown: false,
                 ...TransitionPresets.ModalPresentationIOS,
             }}
         >

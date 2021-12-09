@@ -2,7 +2,7 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Plan } from '../../../app_infrastructure/app_screens/plan/bottom/plan'
-import { Team } from '../../../app_infrastructure/app_screens/plan/bottom/team'
+import { TeamNav } from '../../../app_infrastructure/app_screens/plan/team.navigate'
 const Tab = createBottomTabNavigator();
 
 export const PlanDrawer = () => {
@@ -12,9 +12,9 @@ export const PlanDrawer = () => {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
-                    if (route.name === 'Plans') {
+                    if (route.name === 'Plan') {
                         iconName = 'stats-chart-outline';
-                    } else if (route.name === 'Teams') {
+                    } else if (route.name === 'Team') {
                         iconName = 'people-outline';
                     }
 
@@ -26,8 +26,8 @@ export const PlanDrawer = () => {
                 tabBarInactiveTintColor: 'gray',
             })}
         >
-            <Tab.Screen name="Plans" component={Plan} options={{ headerShown: false }} />
-            <Tab.Screen name="Teams" component={Team} options={{ headerShown: false }} />
+            <Tab.Screen name="Plan" component={Plan} options={{ headerShown: false }} />
+            <Tab.Screen name="Team" component={TeamNav} options={{ headerShown: false }} />
 
         </Tab.Navigator>
     );
