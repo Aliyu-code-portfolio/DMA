@@ -32,7 +32,7 @@ export const Setting = () => {
                         <Title>Account</Title>
                         <View style={styles.line3}>
                             <Text style={{ marginLeft: '5%', color: '#828282', fontSize: 16 }}>Photo</Text>
-                            <View style={{ justifyContent: 'center', paddingLeft: '40%', paddingTop: '10%', }}>
+                            <View style={{ justifyContent: 'center', paddingLeft: '30%', paddingTop: '10%', }}>
 
                                 <Avatar.Image
                                     source={{
@@ -58,14 +58,14 @@ export const Setting = () => {
                         </View>
                         <View style={styles.line4567}>
                             <Text style={{ marginLeft: '5%', color: '#828282', fontSize: 16 }}>Name</Text>
-                            <View style={{ paddingLeft: '40%', }}>
+                            <View style={{ paddingLeft: '20%', }}>
                                 <Text style={{ color: '#000000', fontSize: 16 }}>Mr. Aliyu Abdullahi</Text>
-                                <View style={{ elevation: 1, width: '100%', borderWidth: 1, borderColor: '#f4f4f4', marginTop: '5%' }}></View>
+                                <View style={{ elevation: 1, width: '100%', borderWidth: 1, borderColor: '#f4f4f4', marginTop: '5%' }} />
                             </View>
                         </View>
                         <View style={[styles.line4567, { paddingTop: '10%', }]}>
                             <Text style={{ marginLeft: '5%', color: '#828282', fontSize: 16 }}>Gender</Text>
-                            <View style={{ paddingLeft: '40%', flexDirection: 'row' }}>
+                            <View style={{ paddingLeft: '20%', flexDirection: 'row' }}>
                                 <RoundedButton size={35} color='green' title='M' style={{ marginRight: 20 }} />
                                 <RoundedButton size={35} color='#F0EFEF' title='F' />
 
@@ -73,13 +73,13 @@ export const Setting = () => {
                         </View>
                         <View style={styles.line4567}>
                             <Text style={{ marginLeft: '5%', color: '#828282', fontSize: 16 }}>Age   </Text>
-                            <View style={{ paddingLeft: '40%', }}>
+                            <View style={{ paddingLeft: '20%', }}>
                                 <Text style={{ color: '#000000', fontSize: 16 }}>26</Text>
                             </View>
                         </View>
                         <View style={[styles.line4567, { paddingBottom: '10%' }]}>
                             <Text style={{ marginLeft: '5%', color: '#828282', fontSize: 16 }}>Mail   </Text>
-                            <View style={{ height: '200%', paddingLeft: '40%', paddingRight: '5%' }}>
+                            <View style={{ height: '200%', paddingLeft: '20%', paddingRight: '5%' }}>
                                 <Text style={{ color: '#000000', fontSize: 16, }}>aliyuabdullahi074@gmail.com</Text>
                             </View>
                         </View>

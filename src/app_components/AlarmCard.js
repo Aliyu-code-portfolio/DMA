@@ -3,13 +3,13 @@ import { View, Text, StyleSheet, Image, TouchableWithoutFeedback } from 'react-n
 import { Ionicons } from '@expo/vector-icons';
 //import {Colors} from 'react-native-elements'
 
-export const AlarmCard = ({ data }) => {
+export const AlarmCard = ({ data, onPressed }) => {
 
 
     return (
         <TouchableWithoutFeedback
             onPress={() => {
-                //Do add or remove
+                onPressed(data.id)
             }}>
             <View style={styles.mainCardView}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>

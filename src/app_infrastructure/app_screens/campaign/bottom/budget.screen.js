@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, Dimensions, TextInput, Linking, Platform } from 'react-native'
+import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, Dimensions, TextInput, FlatList, Platform } from 'react-native'
 
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -9,15 +9,36 @@ import { BudgetCard } from '../../../../app_components/BudgetCard'
 
 import { SafeArea } from '../../../utils/safe-area.component'
 import { Title, MediumText, SmallText } from '../../botton.styles'
+import { budget, budgetTotal } from '../../../../app_services/firebase_database/data.manipulate';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export const Budgets = ({ navigation }) => {
-    const [change, setChange] = useState(true)
+    const [change, setChange] = useState(false)
     const [newcost, setNewCost] = useState()
-    const data = [{ 'Event': 'Campaign', 'Date': '23/09/2022', 'Venue': 'Lafia', 'Cost': '95,000' }, { 'Event': 'Campaign', 'Date': '5/03/2022', 'Venue': 'Awe', 'Cost': '1,250,000' }]
+    const [events, setevents] = useState([])
+    const [total, setTotal] = useState(0)
 
 
+    // Functions
+    const sumTotal = (data) => {
+        setTotal(0)
+        data.forEach((item) => {
+            setTotal(total + item)
+            console.log(total)
+        })
+        console.log(total)
+
+    }
+
+    useEffect(() => {
+        budget(retrieveDatabaseData)
+        budgetTotal(sumTotal)
+    }, [])
+    //Functions
+    const retrieveDatabaseData = (data) => {
+        setevents(data)
+    }
     return (
         <>
             <View style={styles.container}>
@@ -37,7 +58,7 @@ export const Budgets = ({ navigation }) => {
 
                     </View>
                     <View style={styles.greetingContainer}>
-                        <View style={styles.vote}>
+                        <View style={styles.budget}>
                             {change ? (<>
                                 <View style={{ alignSelf: 'center' }}>
                                     <Image
@@ -83,6 +104,7 @@ export const Budgets = ({ navigation }) => {
                                     </View>
                                     <View style={{ paddingTop: 20 }}>
                                         <Button icon="check" mode='outlined' color='green' onPress={() => {
+                                            setChange(false)
 
                                         }} >Finished</Button>
 
@@ -100,10 +122,22 @@ export const Budgets = ({ navigation }) => {
                                     }} color='white'  >Budgetting</Button>
 
                                 </View>
-                                    <View style={{ paddingTop: '5%' }}>
-                                        <BudgetCard data={data[0]} />
-                                        <BudgetCard data={data[1]} />
+                                    <View style={{ paddingTop: '5%', height: '98%' }}>
+                                        <FlatList
+                                            data={events}
+                                            renderItem={({ item }) => {
+                                                return (
+                                                    <BudgetCard data={item} />
+                                                )
+                                            }
+                                            }
+                                            keyExtractor={item => item.Id}
+
+                                        />
                                     </View></>)}
+                            <View style={{ height: '5%' }}>
+                                <Text style={{ fontSize: 16, fontFamily: 'Oswald_400Regular', }}>Total: ₦{total}</Text>
+                            </View>
                         </View>
                     </View>
 
@@ -118,7 +152,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    greetingContainer: {
+    budget: {
         height: '90%',
         paddingTop: '5%',
         padding: 10

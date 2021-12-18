@@ -8,7 +8,8 @@ export const Title = styled(Text)`
 
 export const MediumText = styled(Text)`
   font-size: ${(props) => props.theme.sizes[1]};
-  font-family: Lato_400Regular
+  font-family: Lato_400Regular;
+  color: grey;
 `;
 
 export const SmallText = styled(Text)`

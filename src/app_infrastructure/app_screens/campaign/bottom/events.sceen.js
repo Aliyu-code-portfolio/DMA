@@ -4,20 +4,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Button, } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import uuid from 'react-native-uuid';
 
+import { retrieveData, updateDatabase } from '../../../../app_services/firebase_database/data.manipulate'
 import { EventCard } from '../../../../app_components/EventCard'
 import { RoundedButton } from '../../../../app_components/RoundedButton'
 
 import { SafeArea } from '../../../utils/safe-area.component'
 import { Title, MediumText, SmallText } from '../../botton.styles'
 
-const data = [{ 'Event': 'Campaign', 'Remain': '5', 'Venue': 'Lafia' }, { 'Event': 'Meeting', 'Remain': '30', 'Venue': 'Obi' }]
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 //Things left to add
 // Approved event can't be mnodified, pending can be edited or approved or deleted
-//Work on error of rendering unreachable useState
 export const Events = ({ navigation }) => {
     //menu selector
     const [show, setShow] = useState(true)
@@ -27,9 +26,12 @@ export const Events = ({ navigation }) => {
     const [pending, setPending] = useState([])
     const [approved, setApproved] = useState([])
 
+    // will help fix wrong DB update
+    const [loaded, setLoaded] = useState(false)
+
     //Event informations
     const [error, setError] = useState(null)
-    const [addto, setAddto] = useState(null)
+    const [addto, setAddto] = useState('pend')
     const [votable, setVotable] = useState(null)
     const [date, setDate] = useState();
     const [todo, setTodo] = useState()
@@ -60,20 +62,47 @@ export const Events = ({ navigation }) => {
     const showDatepicker = () => {
         showMode('date');
     };
+    // onMount functions
+    useEffect(() => {
+        retrieveData(retrieveDatabaseData)
+    }, [])
 
+    useEffect(() => {
+        if (loaded) {
+            updateDatabase(pending, 'pending')
+        }
+    }, [pending])
+
+    useEffect(() => {
+        if (loaded) {
+            updateDatabase(approved, 'approved')
+        }
+    }, [approved])
 
     //functions
+    const retrieveDatabaseData = (pend, approve) => {
+        setPending(pend)
+        setApproved(approve)
+
+    }
+    const reload = () => {
+        setLoaded(false)
+        retrieveData(retrieveDatabaseData)
+    }
     const onFinish = () => {
+        const id = uuid.v4();
         setError(null)
-        console.log('inside finish')
+        setLoaded(true)
         if (addto == 'pend') {
-            setPending(...pending, { 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Votable': votable })
+            setPending([...pending, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable }])
 
         }
         else if (addto == 'approve') {
-            setApproved(...approved, { 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Votable': votable })
+            setApproved([...approved, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable }])
         }
         setDate(null);
+        setAddto("pend")
+        setVotable(null)
         setAdding(false)
     }
 
@@ -120,8 +149,8 @@ export const Events = ({ navigation }) => {
                                     </View>
                                     <View >
                                         <View style={{ flexDirection: 'row', width: '100%' }}>
-                                            <Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Date</Text>
-                                            <Button style={{ height: '100%', textAlign: 'center' }} color='black' onPress={showDatepicker}>{date ? date : 'Add'}</Button>
+                                            <Text style={{ marginTop: 6, fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Date</Text>
+                                            <Button style={{ height: '100%', textAlign: 'center' }} color='black' onPress={showDatepicker}>{date ? date : 'SELECT'}</Button>
                                             {showPicker &&
                                                 <DateTimePicker
                                                     testID="dateTimePicker"
@@ -142,7 +171,7 @@ export const Events = ({ navigation }) => {
                                         <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Budget</Text>
                                             <TextInput
                                                 style={[styles.input, { marginLeft: 10 }]}
-                                                onChangeText={(text) => { setcost(text) }}
+                                                onChangeText={(text) => { setcost(parseInt(text)) }}
                                                 keyboardType='numeric'
                                                 placeholder="Estimated cost..."
                                             /></View>
@@ -161,8 +190,8 @@ export const Events = ({ navigation }) => {
                                                 style={{ height: 20, width: 100 }}
                                                 onValueChange={(itemValue, itemIndex) => setVotable(itemValue)}
                                             >
-                                                <Picker.Item label="Yes" value='yes' />
-                                                <Picker.Item label="No" value='no' />
+                                                <Picker.Item label="Yes" value={0} />
+                                                <Picker.Item label="No" value={null} />
                                             </Picker></View>
                                     </View>
 
@@ -176,11 +205,11 @@ export const Events = ({ navigation }) => {
                                         {error}
                                     </Text>}
                                     <Button icon="check" mode='outlined' color='green' onPress={() => {
-                                        if (todo && date && venue && addto && votable) {
+                                        if (todo && date && venue && addto) {
                                             onFinish()
                                         }
                                         else {
-                                            setError('Error: Please complete the form above. Including Add to and Team vote options')
+                                            setError('Error: Please complete the form above.')
                                         }
                                     }} >Finished</Button>
 
@@ -208,13 +237,13 @@ export const Events = ({ navigation }) => {
                                     elevation: 8,
                                 }} icon="close" color='white' onPress={() => setShow(false)} >Pending</Button>
                             </View>
-                                <View style={{ paddingTop: '5%', height: '80%' }}>
-                                    <FlatList
-                                        data={show ? approved : pending}
-                                        //Have to stop it rendering unreactable data from usestate data
+                                <View style={{ paddingTop: '5%', height: '80%', elevation: 30 }}>
+                                    {show ? <FlatList
+                                        data={approved}
+                                        keyExtractor={item => item.Id}
                                         renderItem={({ item }) => {
                                             return (
-                                                <EventCard data={item} />
+                                                <EventCard data={item} from={true} refresh={reload} />
                                             )
                                         }
                                         }
@@ -224,9 +253,24 @@ export const Events = ({ navigation }) => {
                                         }}
                                         showsVerticalScrollIndicator={false}
 
-                                    />
+                                    /> : <FlatList
+                                        data={pending}
+                                        renderItem={({ item }) => {
+                                            return (
+                                                <EventCard data={item} from={false} refresh={reload} />
+                                            )
+                                        }
+                                        }
+                                        keyExtractor={item => item.Id}
+                                        contentContainerStyle={{
+                                            flexGrow: 1,
+                                            color: 'green'
+                                        }}
+                                        showsVerticalScrollIndicator={false}
+
+                                    />}
                                 </View>
-                                {admin && (<View style={{ alignItems: 'center', paddingTop: 20, height: '2%' }}>
+                                {admin && (<View style={{ alignItems: 'center', paddingTop: 20, height: '2%', }}>
                                     <RoundedButton title={<Ionicons name="add-circle-outline"
                                         color='green'
                                         size={30} />} onPressed={setAdding} size={45} style={{ elevation: 8, backgroundColor: '#85BB65', borderWidth: 0 }} />

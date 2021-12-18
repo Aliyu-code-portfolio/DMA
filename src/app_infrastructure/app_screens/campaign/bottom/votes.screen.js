@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { Text, StyleSheet, View, TouchableWithoutFeedback, TouchableOpacity, Dimensions, Image } from 'react-native'
 
 import { Ionicons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
 import { Button, } from 'react-native-paper';
-import { VoteCard } from '../../../../app_components/VoteCard'
 
+import { VoteCard } from '../../../../app_components/VoteCard'
+import { eventVote } from '../../../../app_services/firebase_database/data.manipulate'
 import { SafeArea } from '../../../utils/safe-area.component'
 import { Title, MediumText, SmallText } from '../../botton.styles'
+import { FlatList } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -16,8 +17,15 @@ const windowHeight = Dimensions.get('window').height;
 //adding vote input to database when initiated
 export const Votes = ({ navigation }) => {
     const [vote, setVote] = useState(false)
-    const data = [{ 'Event': 'Campaign', 'Date': '23/09/2022', 'Venue': 'Lafia', 'Votes': '5' }, { 'Event': 'Campaign', 'Date': '5/03/2022', 'Venue': 'Awe', 'Votes': '3' }]
+    const [events, setEvents] = useState([])
 
+    useEffect(() => {
+        eventVote(retrieveDatabaseData)
+    }, [])
+    //Functions
+    const retrieveDatabaseData = (data) => {
+        setEvents(data)
+    }
     return (
         <>
             <View style={styles.container}>
@@ -36,68 +44,37 @@ export const Votes = ({ navigation }) => {
                             <Title>Campaign</Title></View>
                     </View>
                     <View style={styles.vote}>
-                        {vote ?
-                            (<><View style={{ alignSelf: 'center' }}>
-                                <Image
-                                    style={{ width: 45, height: 45 }}
-                                    source={require('../../../../../assets/logo.png')}
-                                /></View>
-                                <View style={{ height: '90%', paddingTop: '10%', }}>
-                                    <View style={{ alignItems: 'center', }}>
-                                        <View style={{ flexDirection: 'row', }}>
-                                            <Image
-                                                source={require("../../../../../assets/vote.png")}
-                                                resizeMode="contain"
-                                                style={{
-                                                    borderRadius: 25,
-                                                    height: 50,
-                                                    width: 70,
-                                                }}
-                                            />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
 
-                                        </View>
-                                        <Title>Place your vote</Title>
+                            <Button style={{
+                                backgroundColor: '#85BB65', borderRadius: 20, alignItems: 'center', width: '100%', shadowColor: 'rgb(74, 75, 77)',
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 1,
+                                shadowRadius: 8,
+                                elevation: 8,
+                            }} color='white' onPress={() => console.log(events)} >Voting</Button>
 
-                                        <View >
-                                            <View style={{ flexDirection: 'row', width: '100%', paddingTop: '5%', alignSelf: 'center', }}>
-                                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, textAlign: 'center' }}>Campaign</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', paddingTop: '5%', alignSelf: 'center', }}>
-                                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, textAlign: 'center' }}>Lafia</Text>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', paddingTop: '5%', alignSelf: 'center', }}>
-                                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, textAlign: 'center' }}>25/03/2021</Text>
-                                            </View>
-                                        </View>
+                        </View>
+                        <View style={{ paddingTop: '5%' }}>
+                            {events ? <FlatList
+                                data={events}
+                                keyExtractor={item => item.Id}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <VoteCard data={item} />
+                                    )
+                                }
+                                }
+                                contentContainerStyle={{
+                                    flexGrow: 1,
+                                    color: 'green'
+                                }}
+                                showsVerticalScrollIndicator={false}
 
-                                    </View>
-                                    <View style={{ paddingTop: 20 }}>
-                                        <Button icon="check" mode='outlined' color='green' onPress={() => {
+                            /> : <View style={{ paddingTop: '45%', alignSelf: 'center' }}><Text>Waiting for data</Text></View>
+                            }
 
-                                        }} >Finished</Button>
-
-                                    </View>
-
-                                </View></>) : (<>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-
-                                        <Button style={{
-                                            backgroundColor: '#85BB65', borderRadius: 20, alignItems: 'center', width: '100%', shadowColor: 'rgb(74, 75, 77)',
-                                            shadowOffset: { width: 0, height: 0 },
-                                            shadowOpacity: 1,
-                                            shadowRadius: 8,
-                                            elevation: 8,
-                                        }} color='white'  >Voting</Button>
-
-                                    </View>
-                                    <View style={{ paddingTop: '5%' }}>
-                                        <VoteCard onPressed={setVote} data={data[0]} />
-                                        <TouchableOpacity>
-                                            <VoteCard data={data[1]} />
-                                        </TouchableOpacity>
-                                    </View>
-                                </>)
-                        }
+                        </View>
                     </View>
 
                 </SafeArea>

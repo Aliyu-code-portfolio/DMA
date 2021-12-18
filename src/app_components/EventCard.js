@@ -1,59 +1,113 @@
-import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
+import moment from 'moment';
+
+import { finished } from '../app_services/firebase_database/data.manipulate';
 //import {Colors} from 'react-native-elements'
 
-export const EventCard = ({ data }) => {
 
+export const EventCard = ({ data, from, refresh }) => {
+    const [red, setRed] = useState(false);
+    var given = moment(data.Date, "DD/MM/YYYY");
+    var current = moment().startOf('day');
+    const time = moment.duration(given.diff(current)).asDays();
+    const [option, setOption] = useState(false)
 
+    useEffect(() => {
+        if (time < 8) {
+
+            setRed(true)
+        }
+    }, [])
     return (
         <TouchableWithoutFeedback
             onPress={() => {
-                //Do add or remove
+                setOption(true)
             }}>
-            <View style={styles.mainCardView}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={[styles.mainCardView, { flexDirection: option ? 'column' : 'row' }]}>
+                {option ? <><View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                    {from && <TouchableOpacity onPress={() => { finished(data, 'finish'); refresh() }} style={{ width: '45%', height: '80%', justifyContent: 'center', marginRight: '3%', backgroundColor: 'green', borderRadius: 10 }}>
+                        <Ionicons
+                            name="checkmark-outline"
+                            color='white'
+                            size={15}
+                            style={{ alignSelf: 'center' }}
+                        /><View ><Text style={{ textAlign: 'center', color: 'white', }}>Event Finished</Text></View></TouchableOpacity>}
+                    <TouchableOpacity onPress={() => { finished(data, 'delete'); refresh() }} style={{ width: '45%', height: '80%', justifyContent: 'center', backgroundColor: 'red', borderRadius: 10 }}>
+                        <Ionicons
+                            name="close-outline"
+                            color='white'
+                            size={15}
+                            style={{ alignSelf: 'center' }}
+                        />
+                        <View ><Text style={{ textAlign: 'center', color: 'white' }}>Event Cancelled</Text></View></TouchableOpacity>
 
-                    <View style={{ marginLeft: 12 }}>
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                color: 'black',
-                                fontWeight: 'bold',
-                                fontFamily: 'Lato_400Regular',
-                            }}>
-                            {data.Event}
-                        </Text>
-                        <View
-                            style={{
-                                marginTop: 4,
-                                borderWidth: 0,
-                                width: '85%',
-                            }}>
+                </View>
+                    <TouchableOpacity onPress={() => setOption(false)}><View style={{ alignSelf: 'center', paddingBottom: 5, }}><Text>Go Back</Text></View></TouchableOpacity>
+
+                </>
+                    : <><View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+                        <View style={{ justifyContent: 'center', width: 200 }}>
                             <Text
                                 style={{
-                                    color: 'red',
-                                    fontSize: 10,
-                                    paddingLeft: '25%'
+                                    fontSize: 16,
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    fontFamily: 'Lato_400Regular',
+                                    paddingLeft: 5
                                 }}>
-                                {data.Remain + ' DAY(S) TO GO'}
+                                {data.Event}
                             </Text>
+                            <View
+                                style={{
+                                    height: 30,
+                                    backgroundColor: '#85BB65',
+                                    borderWidth: 0,
+                                    width: '80%',
+                                    marginTop: 5,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 30,
+                                }}>
+                                <Text style={{ color: 'white' }}>{data.Venue}</Text>
+                            </View>
+                            <View
+                                style={{
+                                    marginTop: 4,
+                                    borderWidth: 0,
+                                    width: '85%',
+                                    paddingLeft: 20
+                                }}>
+                                <Text
+                                    style={{
+                                        color: red ? 'red' : 'green',
+                                        fontSize: 10,
+                                        paddingLeft: '0%'
+                                    }}>
+                                    {time + ' DAY(S) TO GO'}
+                                </Text>
+                            </View>
                         </View>
                     </View>
-                </View>
-                <View
-                    style={{
-                        height: 30,
-                        backgroundColor: 'black',
-                        borderWidth: 0,
-                        width: '25%',
-                        marginLeft: -26,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 30,
-                    }}>
-                    <Text style={{ color: 'white' }}>{data.Venue}</Text>
-                </View>
+                        <View
+                            style={{
+                                height: 35,
+                                borderWidth: 0,
+                                width: '25%',
+                                marginLeft: -26,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 30,
+                            }}>
+                            {/* do something here */}
+                            <Ionicons
+                                name={from ? "checkmark-circle-outline" : "ellipsis-horizontal-circle-outline"}
+                                color={from ? 'green' : '#FBB117'}
+                                size={35}
+                            />
+                        </View></>}
             </View>
         </TouchableWithoutFeedback>
     )
@@ -64,7 +118,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     mainCardView: {
-        height: 75,
+        height: 100,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
@@ -74,7 +128,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 8,
         elevation: 8,
-        flexDirection: 'row',
         justifyContent: 'space-between',
         paddingLeft: 16,
         paddingRight: 14,

@@ -1,7 +1,0 @@
-const HeadlineTypes = {
-  HEADLINE_REQUEST: 'HEADLINE_REQUEST',
-  HEADLINE_SUCCESS: 'HEADLINE_SUCCESS',
-  HEADLINE_FAILED: 'HEADLINE_FAILED'
-}
-
-export default HeadlineTypes

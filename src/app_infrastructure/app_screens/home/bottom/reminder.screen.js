@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, FlatList, Platform, Dimensions, Vibration, TextInput, Alert, } from 'react-native'
-import { AsyncStorage } from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Ionicons } from '@expo/vector-icons';
 import LottieView from "lottie-react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -43,7 +43,7 @@ export const Reminder = ({ navigation }) => {
             new Date(...a.Time.split(':').reverse()) -
             new Date(...b.Time.split(':').reverse()));
         setSortedAlarm(tempsorted2);
-        console.log('Sorted: ' + sortedAlarm)
+        //console.log('Sorted: ' + sortedAlarm)
     }
     const onFinish = () => {
         Alert.alert(
@@ -60,13 +60,13 @@ export const Reminder = ({ navigation }) => {
                     style: "cancel"
                 },
                 {
-                    text: "Yes Remind me",
+                    text: "Yes remind me",
 
                     onPress: () => {
-                        setAlarm([...alarm, { 'Todo': todo, 'Date': date, 'Time': time }])
+                        setAlarm([...alarm, { 'id': sortedAlarm.length, 'Todo': todo, 'Date': date, 'Time': time }])
                         sortRemainders()
                         setAdding(false)
-                        console.log(alarm)
+                        //console.log(alarm)
                     },
                     style: "cancel"
                 },
@@ -76,25 +76,29 @@ export const Reminder = ({ navigation }) => {
     }
     //clear history data
     const onClear = () => {
+        setSortedAlarm([])
         setAlarm([])
+    }
+    const removeAlarm = (key) => {
+        // use key to delete and use for loop, remember alarm array too
+        console.log(sortedAlarm.length)
+        console.log(key)
     }
 
     //locally store remainder history
-    const saveAlarmList = async () => {
+    const saveAlarmList = () => {
         try {
-            await AsyncStorage.setItem('alarm', JSON.stringify(sortedAlarm))
+            AsyncStorage.setItem('alarm', JSON.stringify(sortedAlarm))
         } catch (e) {
             console.log(e)
         }
     };
 
     //load back locally stored data
-    const loadAlarmList = async () => {
+    const loadAlarmList = () => {
         try {
-            const alarm = await AsyncStorage.getItem('alarm')
-            if (alarm && JSON.parse(alarm).lenght) {
-                setSortedAlarm(JSON.parse(alarm))
-            }
+            AsyncStorage.getItem('alarm').then((value) => { setSortedAlarm(JSON.parse(value)); setAlarm(JSON.parse(value)) })
+
         } catch (e) {
             console.log(e)
         }
@@ -220,7 +224,7 @@ export const Reminder = ({ navigation }) => {
 
                                 renderItem={({ item }) => {
                                     return (
-                                        <AlarmCard data={item} />
+                                        <AlarmCard data={item} onPressed={removeAlarm} />
                                     )
                                 }
                                 }
