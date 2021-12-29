@@ -35,23 +35,7 @@ export const Search = ({ navigation }) => {
         <>
             <View style={styles.container}>
                 <SafeArea>
-                    <View style={styles.topBar}>
-                        <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
-                                <Ionicons
-                                    name="menu-outline"
-                                    color='green'
-                                    size={30}
-                                />
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <Image
-                                style={{ width: 35, height: 35 }}
-                                source={require('../../../../../assets/logo.png')}
-                            /></View>
 
-                    </View>
                     <View style={styles.searchContainer}>
                         {/* follows home screen and displays news by search word */}
                         <View style={{ alignItems: 'center', width: '100%', alignSelf: 'center', paddingBottom: 15 }}>
@@ -88,7 +72,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     searchContainer: {
-        padding: 10
+        padding: 10,
+        paddingTop: 30
     },
     font: {
         color: 'green'

@@ -6,6 +6,7 @@ import { Button, } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import uuid from 'react-native-uuid';
 
+import { isAdmin } from '../../../../app_services/authentication/network/user'
 import { retrieveData, updateDatabase } from '../../../../app_services/firebase_database/data.manipulate'
 import { EventCard } from '../../../../app_components/EventCard'
 import { RoundedButton } from '../../../../app_components/RoundedButton'
@@ -21,7 +22,7 @@ export const Events = ({ navigation }) => {
     //menu selector
     const [show, setShow] = useState(true)
     // Check database for admin status
-    const [admin, setAdmin] = useState(true)
+    const [admin, setAdmin] = useState(false)
     const [adding, setAdding] = useState(false)
     const [pending, setPending] = useState([])
     const [approved, setApproved] = useState([])
@@ -64,6 +65,7 @@ export const Events = ({ navigation }) => {
     };
     // onMount functions
     useEffect(() => {
+        isAdmin(isAdministrator)
         retrieveData(retrieveDatabaseData)
     }, [])
 
@@ -80,6 +82,10 @@ export const Events = ({ navigation }) => {
     }, [approved])
 
     //functions
+
+    const isAdministrator = (info) => {
+        setAdmin(info)
+    }
     const retrieveDatabaseData = (pend, approve) => {
         setPending(pend)
         setApproved(approve)
@@ -94,7 +100,7 @@ export const Events = ({ navigation }) => {
         setError(null)
         setLoaded(true)
         if (addto == 'pend') {
-            setPending([...pending, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable }])
+            setPending([...pending, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable, 'Down': 0 }])
 
         }
         else if (addto == 'approve') {
@@ -109,175 +115,175 @@ export const Events = ({ navigation }) => {
     return (
         <>
             <View style={styles.container}>
-                <SafeArea>
-                    <View style={styles.topBar}>
-                        <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
-                                <Ionicons
-                                    name="menu-outline"
-                                    color='green'
-                                    size={30}
-                                />
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <Title>Campaign</Title></View>
-
+                {/* <SafeArea> */}
+                <View style={styles.topBar}>
+                    <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
+                            <Ionicons
+                                name="menu-outline"
+                                color='green'
+                                size={30}
+                            />
+                        </TouchableWithoutFeedback>
                     </View>
-                    <View style={styles.events}>
-                        {adding ? (<><View style={{ alignSelf: 'center' }}>
-                            <Image
-                                style={{ width: 45, height: 45 }}
-                                source={require('../../../../../assets/logo.png')}
-                            /></View>
-                            <View style={{ height: '90%', paddingTop: 50, justifyContent: 'center', }}>
-                                <View style={{ paddingLeft: '5%' }}>
-                                    <Title>Add an Event</Title>
-                                    <View style={{ paddingBottom: 20, flexDirection: 'row', }}>
-                                        <Ionicons
-                                            name="megaphone-outline"
-                                            color='green'
-                                            size={30}
-                                        />
-                                        <View style={{ justifyContent: 'center', alignItems: 'center', width: '70%' }}>
-                                            <TextInput
-                                                style={styles.input}
-                                                onChangeText={(text) => { setTodo(text) }}
-                                                placeholder="Description..."
-                                            />
-                                        </View>
-                                    </View>
-                                    <View >
-                                        <View style={{ flexDirection: 'row', width: '100%' }}>
-                                            <Text style={{ marginTop: 6, fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Date</Text>
-                                            <Button style={{ height: '100%', textAlign: 'center' }} color='black' onPress={showDatepicker}>{date ? date : 'SELECT'}</Button>
-                                            {showPicker &&
-                                                <DateTimePicker
-                                                    testID="dateTimePicker"
-                                                    value={fulldate}
-                                                    mode={mode}
-                                                    is24Hour={true}
-                                                    display="default"
-                                                    onChange={onChange}
-                                                />
-                                            }
-                                        </View>
-                                        <View style={{ flexDirection: 'row', width: '100%' }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Venue</Text>
-                                            <TextInput
-                                                style={[styles.input, { marginLeft: 10 }]}
-                                                onChangeText={(text) => { setVenue(text) }}
-                                                placeholder="Take place at..."
-                                            /></View>
-                                        <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Budget</Text>
-                                            <TextInput
-                                                style={[styles.input, { marginLeft: 10 }]}
-                                                onChangeText={(text) => { setcost(parseInt(text)) }}
-                                                keyboardType='numeric'
-                                                placeholder="Estimated cost..."
-                                            /></View>
-                                        <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Add to</Text>
-                                            <Picker
+                    <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <Title>Campaign</Title></View>
 
-                                                style={{ height: 20, width: 200 }}
-                                                onValueChange={(itemValue, itemIndex) => setAddto(itemValue)}
-                                            >
-                                                <Picker.Item label="Pending List" value="pend" />
-                                                <Picker.Item label="Approved List" value="approve" />
-                                            </Picker></View>
-                                        <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Team vote</Text>
-                                            <Picker
-                                                selectedValue={votable}
-                                                style={{ height: 20, width: 100 }}
-                                                onValueChange={(itemValue, itemIndex) => setVotable(itemValue)}
-                                            >
-                                                <Picker.Item label="Yes" value={0} />
-                                                <Picker.Item label="No" value={null} />
-                                            </Picker></View>
-                                    </View>
-
-                                    <View style={{ paddingTop: 20 }}>
-                                        {/* <Button icon="clock" color='black' onPress={showTimepicker} >Time: {time}</Button> */}
-                                    </View>
-
-                                </View>
-                                <View style={{ paddingTop: 20 }}>
-                                    {error && <Text style={{ color: 'red', textAlign: 'center' }}>
-                                        {error}
-                                    </Text>}
-                                    <Button icon="check" mode='outlined' color='green' onPress={() => {
-                                        if (todo && date && venue && addto) {
-                                            onFinish()
-                                        }
-                                        else {
-                                            setError('Error: Please complete the form above.')
-                                        }
-                                    }} >Finished</Button>
-
-                                </View>
-                                <View style={{ paddingTop: 10 }}>
-                                    <Button icon="close" mode='outlined' color='red' onPress={() => { setDate(null); setError(null); setAdding(false) }} >Cancel</Button>
-                                </View>
-
-                            </View>
-                        </>) :
-                            (<><View style={{ height: '8%', flexDirection: 'row', alignSelf: 'center', width: '100%' }}>
-
-                                <Button style={{
-                                    backgroundColor: show ? '#85BB65' : 'green', borderRadius: 20, width: '50%', shadowColor: 'rgb(74, 75, 77)',
-                                    shadowOffset: { width: 0, height: 0 },
-                                    shadowOpacity: 1,
-                                    shadowRadius: 8,
-                                    elevation: 8,
-                                }} icon="check" color='white' onPress={() => setShow(true)} >Approved</Button>
-                                <Button style={{
-                                    backgroundColor: show ? 'green' : '#85BB65', borderRadius: 20, width: '50%', shadowColor: 'rgb(74, 75, 77)',
-                                    shadowOffset: { width: 0, height: 0 },
-                                    shadowOpacity: 1,
-                                    shadowRadius: 8,
-                                    elevation: 8,
-                                }} icon="close" color='white' onPress={() => setShow(false)} >Pending</Button>
-                            </View>
-                                <View style={{ paddingTop: '5%', height: '80%', elevation: 30 }}>
-                                    {show ? <FlatList
-                                        data={approved}
-                                        keyExtractor={item => item.Id}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <EventCard data={item} from={true} refresh={reload} />
-                                            )
-                                        }
-                                        }
-                                        contentContainerStyle={{
-                                            flexGrow: 1,
-                                            color: 'green'
-                                        }}
-                                        showsVerticalScrollIndicator={false}
-
-                                    /> : <FlatList
-                                        data={pending}
-                                        renderItem={({ item }) => {
-                                            return (
-                                                <EventCard data={item} from={false} refresh={reload} />
-                                            )
-                                        }
-                                        }
-                                        keyExtractor={item => item.Id}
-                                        contentContainerStyle={{
-                                            flexGrow: 1,
-                                            color: 'green'
-                                        }}
-                                        showsVerticalScrollIndicator={false}
-
-                                    />}
-                                </View>
-                                {admin && (<View style={{ alignItems: 'center', paddingTop: 20, height: '2%', }}>
-                                    <RoundedButton title={<Ionicons name="add-circle-outline"
+                </View>
+                <View style={styles.events}>
+                    {adding ? (<><View style={{ alignSelf: 'center' }}>
+                        <Image
+                            style={{ width: 45, height: 45 }}
+                            source={require('../../../../../assets/logo.png')}
+                        /></View>
+                        <View style={{ height: '90%', paddingTop: 50, justifyContent: 'center', }}>
+                            <View style={{ paddingLeft: '5%' }}>
+                                <Title>Add an Event</Title>
+                                <View style={{ paddingBottom: 20, flexDirection: 'row', }}>
+                                    <Ionicons
+                                        name="megaphone-outline"
                                         color='green'
-                                        size={30} />} onPressed={setAdding} size={45} style={{ elevation: 8, backgroundColor: '#85BB65', borderWidth: 0 }} />
-                                </View>)}
-                            </>)}</View>
+                                        size={30}
+                                    />
+                                    <View style={{ justifyContent: 'center', alignItems: 'center', width: '70%' }}>
+                                        <TextInput
+                                            style={styles.input}
+                                            onChangeText={(text) => { setTodo(text) }}
+                                            placeholder="Description..."
+                                        />
+                                    </View>
+                                </View>
+                                <View >
+                                    <View style={{ flexDirection: 'row', width: '100%' }}>
+                                        <Text style={{ marginTop: 6, fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Date</Text>
+                                        <Button style={{ height: '100%', textAlign: 'center' }} color='black' onPress={showDatepicker}>{date ? date : 'SELECT'}</Button>
+                                        {showPicker &&
+                                            <DateTimePicker
+                                                testID="dateTimePicker"
+                                                value={fulldate}
+                                                mode={mode}
+                                                is24Hour={true}
+                                                display="default"
+                                                onChange={onChange}
+                                            />
+                                        }
+                                    </View>
+                                    <View style={{ flexDirection: 'row', width: '100%' }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Venue</Text>
+                                        <TextInput
+                                            style={[styles.input, { marginLeft: 10 }]}
+                                            onChangeText={(text) => { setVenue(text) }}
+                                            placeholder="Take place at..."
+                                        /></View>
+                                    <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Budget</Text>
+                                        <TextInput
+                                            style={[styles.input, { marginLeft: 10 }]}
+                                            onChangeText={(text) => { setcost(parseInt(text)) }}
+                                            keyboardType='numeric'
+                                            placeholder="Estimated cost..."
+                                        /></View>
+                                    <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Add to</Text>
+                                        <Picker
 
-                </SafeArea>
+                                            style={{ height: 20, width: 200 }}
+                                            onValueChange={(itemValue, itemIndex) => setAddto(itemValue)}
+                                        >
+                                            <Picker.Item label="Pending List" value="pend" />
+                                            <Picker.Item label="Approved List" value="approve" />
+                                        </Picker></View>
+                                    <View style={{ flexDirection: 'row', paddingTop: '5%', }}><Text style={{ fontFamily: 'Lato_400Regular', fontWeight: 'bold', fontSize: 16 }}>Team vote</Text>
+                                        <Picker
+                                            selectedValue={votable}
+                                            style={{ height: 20, width: 100 }}
+                                            onValueChange={(itemValue, itemIndex) => setVotable(itemValue)}
+                                        >
+                                            <Picker.Item label="Yes" value={0} />
+                                            <Picker.Item label="No" value={null} />
+                                        </Picker></View>
+                                </View>
+
+                                <View style={{ paddingTop: 20 }}>
+                                    {/* <Button icon="clock" color='black' onPress={showTimepicker} >Time: {time}</Button> */}
+                                </View>
+
+                            </View>
+                            <View style={{ paddingTop: 20 }}>
+                                {error && <Text style={{ color: 'red', textAlign: 'center' }}>
+                                    {error}
+                                </Text>}
+                                <Button icon="check" mode='outlined' color='green' onPress={() => {
+                                    if (todo && date && venue && addto) {
+                                        onFinish()
+                                    }
+                                    else {
+                                        setError('Error: Please complete the form above.')
+                                    }
+                                }} >Finished</Button>
+
+                            </View>
+                            <View style={{ paddingTop: 10 }}>
+                                <Button icon="close" mode='outlined' color='red' onPress={() => { setDate(null); setError(null); setAdding(false) }} >Cancel</Button>
+                            </View>
+
+                        </View>
+                    </>) :
+                        (<><View style={{ height: '8%', flexDirection: 'row', alignSelf: 'center', width: '100%' }}>
+
+                            <Button style={{
+                                backgroundColor: show ? '#85BB65' : 'green', borderRadius: 20, width: '50%', shadowColor: 'rgb(74, 75, 77)',
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 1,
+                                shadowRadius: 8,
+                                elevation: 8,
+                            }} icon="check" color='white' onPress={() => setShow(true)} >Approved</Button>
+                            <Button style={{
+                                backgroundColor: show ? 'green' : '#85BB65', borderRadius: 20, width: '50%', shadowColor: 'rgb(74, 75, 77)',
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 1,
+                                shadowRadius: 8,
+                                elevation: 8,
+                            }} icon="close" color='white' onPress={() => setShow(false)} >Pending</Button>
+                        </View>
+                            <View style={{ paddingTop: '5%', height: '80%', elevation: 30 }}>
+                                {show ? <FlatList
+                                    data={approved}
+                                    keyExtractor={item => item.Id}
+                                    renderItem={({ item }) => {
+                                        return (
+                                            <EventCard data={item} from={true} refresh={reload} admin={admin} />
+                                        )
+                                    }
+                                    }
+                                    contentContainerStyle={{
+                                        flexGrow: 1,
+                                        color: 'green'
+                                    }}
+                                    showsVerticalScrollIndicator={false}
+
+                                /> : <FlatList
+                                    data={pending}
+                                    renderItem={({ item }) => {
+                                        return (
+                                            <EventCard data={item} from={false} refresh={reload} admin={admin} />
+                                        )
+                                    }
+                                    }
+                                    keyExtractor={item => item.Id}
+                                    contentContainerStyle={{
+                                        flexGrow: 1,
+                                        color: 'green'
+                                    }}
+                                    showsVerticalScrollIndicator={false}
+
+                                />}
+                            </View>
+                            {admin && (<View style={{ alignItems: 'center', paddingTop: 20, height: '2%', }}>
+                                <RoundedButton title={<Ionicons name="add-circle-outline"
+                                    color='green'
+                                    size={30} />} onPressed={setAdding} size={45} style={{ elevation: 8, backgroundColor: '#85BB65', borderWidth: 0 }} />
+                            </View>)}
+                        </>)}</View>
+
+                {/* </SafeArea> */}
             </View>
         </>
     )

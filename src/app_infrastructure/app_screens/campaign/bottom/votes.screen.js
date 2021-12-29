@@ -19,6 +19,7 @@ export const Votes = ({ navigation }) => {
     const [vote, setVote] = useState(false)
     const [events, setEvents] = useState([])
 
+
     useEffect(() => {
         eventVote(retrieveDatabaseData)
     }, [])
@@ -29,55 +30,55 @@ export const Votes = ({ navigation }) => {
     return (
         <>
             <View style={styles.container}>
-                <SafeArea>
-                    <View style={styles.topBar}>
-                        <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
-                                <Ionicons
-                                    name="menu-outline"
-                                    color='green'
-                                    size={30}
-                                />
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <Title>Campaign</Title></View>
+                {/* <SafeArea> */}
+                <View style={styles.topBar}>
+                    <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
+                            <Ionicons
+                                name="menu-outline"
+                                color='green'
+                                size={30}
+                            />
+                        </TouchableWithoutFeedback>
                     </View>
-                    <View style={styles.vote}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+                    <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <Title>Campaign</Title></View>
+                </View>
+                <View style={styles.vote}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
 
-                            <Button style={{
-                                backgroundColor: '#85BB65', borderRadius: 20, alignItems: 'center', width: '100%', shadowColor: 'rgb(74, 75, 77)',
-                                shadowOffset: { width: 0, height: 0 },
-                                shadowOpacity: 1,
-                                shadowRadius: 8,
-                                elevation: 8,
-                            }} color='white' onPress={() => console.log(events)} >Voting</Button>
+                        <Button style={{
+                            backgroundColor: '#85BB65', borderRadius: 20, alignItems: 'center', width: '100%', shadowColor: 'rgb(74, 75, 77)',
+                            shadowOffset: { width: 0, height: 0 },
+                            shadowOpacity: 1,
+                            shadowRadius: 8,
+                            elevation: 8,
+                        }} color='white' onPress={() => console.log(events)} >Voting</Button>
 
-                        </View>
-                        <View style={{ paddingTop: '5%' }}>
-                            {events ? <FlatList
-                                data={events}
-                                keyExtractor={item => item.Id}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <VoteCard data={item} />
-                                    )
-                                }
-                                }
-                                contentContainerStyle={{
-                                    flexGrow: 1,
-                                    color: 'green'
-                                }}
-                                showsVerticalScrollIndicator={false}
-
-                            /> : <View style={{ paddingTop: '45%', alignSelf: 'center' }}><Text>Waiting for data</Text></View>
+                    </View>
+                    <View style={{ paddingTop: '5%' }}>
+                        {events ? <FlatList
+                            data={events}
+                            keyExtractor={item => item.Id}
+                            renderItem={({ item }) => {
+                                return (
+                                    <VoteCard data={item} />
+                                )
                             }
+                            }
+                            contentContainerStyle={{
+                                flexGrow: 1,
+                                color: 'green'
+                            }}
+                            showsVerticalScrollIndicator={false}
 
-                        </View>
+                        /> : <View style={{ paddingTop: '45%', alignSelf: 'center' }}><Text>Waiting for data</Text></View>
+                        }
+
                     </View>
+                </View>
 
-                </SafeArea>
+                {/* </SafeArea> */}
             </View>
         </>
     )

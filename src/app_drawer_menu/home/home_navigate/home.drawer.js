@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import { Home } from '../../../app_infrastructure/app_screens/home/bottom/home.screen'
 import { Search } from '../../../app_infrastructure/app_screens/home/bottom/search.screen'
-import { Reminder } from '../../../app_infrastructure/app_screens/home/bottom/reminder.screen'
+import App from '../../../app_infrastructure/app_screens/home/bottom/reminder_tab'
 import { Setting } from '../../../app_infrastructure/app_screens/home/bottom/setting.screen'
 const Tab = createBottomTabNavigator();
 
@@ -44,7 +44,7 @@ export const HomeDrawer = () => {
                     fontWeight: 'bold',
                 }, */}
             <Tab.Screen name="Search Page" component={Search} options={{ headerShown: false }} />
-            <Tab.Screen name="Reminder Page" component={Reminder} options={{ headerShown: false }} />
+            <Tab.Screen name="Reminder Page" component={App} options={{ headerShown: false }} />
             <Tab.Screen name="Settings Page" component={Setting} options={{ headerShown: false }} />
         </Tab.Navigator>
     );

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ProgressBar } from 'react-native-paper';
-import { voteAnEvent } from '../app_services/firebase_database/data.manipulate'
+import { upvoteAnEvent, downvoteAnEvent, approveDeclineEvent } from '../app_services/firebase_database/data.manipulate'
+import { userCount } from '../app_services/authentication/network/user'
 
 //import {Colors} from 'react-native-elements'
 //Pull to refresh
@@ -12,18 +13,17 @@ export const VoteCard = ({ data }) => {
     const [haveVote, setHaveVote] = useState(true)
     const [voting, setVoting] = useState(false)
     //retrive accurate number of members from database
-    const [members, setMembers] = useState(10)
+    //const [members, setMembers] = useState(0)
     const [progress, setProgress] = useState(0);
     let id = data.Id
 
-    // useEffect(() => {
 
-    // }, [])
 
     useEffect(() => {
         //get number of members
+        userCount(checkUpdated)
         loadHaveVoted()
-        getProgress()
+
     }, [])
     //Functions
     //locally store vote history
@@ -56,13 +56,16 @@ export const VoteCard = ({ data }) => {
 
     const finished = (item) => {
         if (item) {
-            voteAnEvent(data)
+            upvoteAnEvent(data)
+        }
+        else {
+            downvoteAnEvent(data)
         }
         saveHaveVoted('yes')
         setHaveVote(false)
 
     }
-    const getProgress = () => {
+    const getProgress = (members) => {
         if (members % 2 == 0) {
             const needed = (members / 2) + 1
             setProgress(data.Vote / needed)
@@ -70,6 +73,33 @@ export const VoteCard = ({ data }) => {
         else {
             const needed = (members / 2) + 0.5
             setProgress(data.Vote / needed)
+        }
+    }
+
+
+    const checkUpdated = (num) => {
+        //setMembers(num)
+        getProgress(num)
+        // console.log(members)
+        console.log(num + 'in num')
+        if (num % 2 == 0) {
+            const needed = (num / 2) + 1
+            if (data.Vote == needed || data.Vote > needed) {
+                approveDeclineEvent('approved', data)
+            }
+            if (data.Down == needed || data.Down > needed) {
+                approveDeclineEvent('declined', data)
+            }
+
+        }
+        else {
+            const needed = (num / 2) + 0.5
+            if (data.Vote == needed || data.Vote > needed) {
+                approveDeclineEvent('approved', data)
+            }
+            if (data.Down == needed || data.Down > needed) {
+                approveDeclineEvent('declined', data)
+            }
         }
     }
     return (

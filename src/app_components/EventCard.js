@@ -7,8 +7,9 @@ import { finished } from '../app_services/firebase_database/data.manipulate';
 //import {Colors} from 'react-native-elements'
 
 
-export const EventCard = ({ data, from, refresh }) => {
+export const EventCard = ({ data, from, refresh, admin }) => {
     const [red, setRed] = useState(false);
+    const [togo, setTogo] = useState(true)
     var given = moment(data.Date, "DD/MM/YYYY");
     var current = moment().startOf('day');
     const time = moment.duration(given.diff(current)).asDays();
@@ -16,15 +17,16 @@ export const EventCard = ({ data, from, refresh }) => {
 
     useEffect(() => {
         if (time < 8) {
-
             setRed(true)
+        }
+        if (time < 0) {
+            setTogo(false)
+            finished(data, 'finish')
         }
     }, [])
     return (
         <TouchableWithoutFeedback
-            onPress={() => {
-                setOption(true)
-            }}>
+            onPress={() => { admin ? setOption(true) : console.log("Not an Admin") }} >
             <View style={[styles.mainCardView, { flexDirection: option ? 'column' : 'row' }]}>
                 {option ? <><View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
                     {from && <TouchableOpacity onPress={() => { finished(data, 'finish'); refresh() }} style={{ width: '45%', height: '80%', justifyContent: 'center', marginRight: '3%', backgroundColor: 'green', borderRadius: 10 }}>

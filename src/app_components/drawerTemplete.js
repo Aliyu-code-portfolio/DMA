@@ -26,14 +26,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { themeContext } from '../app_drawer_menu/index.drawer';
-
+// import { themeContext } from '../app_drawer_menu/index.drawer';
+import { themeContext } from '../../App';
+import { clearAsyncStorage } from "../app_services/authentication/asyncStorage";
+import { LogOutUser } from "../app_services/authentication/network";
 import { SafeArea } from '../app_infrastructure/utils/safe-area.component';
 
 export function DrawerTemplete(props) {
-    const { isDarkTheme, toggleTheme } = useContext(themeContext)
+    //const { isDarkTheme, toggleTheme } = useContext(themeContext)
+    const { toggleTheme } = useContext(themeContext)
+    const isDarkTheme = false
     const [focused, setFocus] = useState(1);
     const paperTheme = useTheme();
+
+    const logout = () => {
+        LogOutUser()
+            .then(() => {
+                clearAsyncStorage()
+                    .then(() => {
+                        props.navigation.replace("Login");
+                    })
+                    .catch((err) => console.log(err));
+            })
+            .catch((err) => console.log(err));
+    };
+
     return (
         <SafeArea>
             <View style={{ flex: 1, backgroundColor: isDarkTheme ? '#000003' : '#FFFFFF', color: isDarkTheme ? 'white' : '#000003' }}>
@@ -95,7 +112,7 @@ export function DrawerTemplete(props) {
                                 )}
                                 label="Chats"
                                 style={{ borderColor: focused == 3 ? 'green' : 'white', borderWidth: 1 }}
-                                onPress={() => { setFocus(3); props.navigation.navigate('BookmarkScreen') }}
+                                onPress={() => { setFocus(3); props.navigation.navigate('ChatApp') }}
                             />
                             <DrawerItem
                                 icon={({ color, size }) => (
@@ -151,7 +168,7 @@ export function DrawerTemplete(props) {
                                 <View style={styles.preference}>
                                     <Text>Dark Theme</Text>
                                     <View pointerEvents="none">
-                                        <Switch value={paperTheme.dark} />
+                                        {/* <Switch value={paperTheme.dark} /> */}
                                     </View>
                                 </View>
                             </TouchableRipple>
@@ -168,7 +185,7 @@ export function DrawerTemplete(props) {
                             />
                         )}
                         label="Sign Out"
-                    // onPress={() => { signOut() }}
+                        onPress={() => { logout() }}
                     />
                 </Drawer.Section>
             </View>

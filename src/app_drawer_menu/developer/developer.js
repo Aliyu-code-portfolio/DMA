@@ -16,56 +16,56 @@ export const Developer = ({ navigation }) => {
     return (
         <>
             <View style={styles.container}>
-                <SafeArea>
-                    <View style={styles.topBar}>
-                        <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
-                                <Ionicons
-                                    name="menu-outline"
-                                    color='green'
-                                    size={30}
-                                />
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <Title>Developers</Title></View>
-
+                {/* <SafeArea> */}
+                <View style={styles.topBar}>
+                    <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
+                            <Ionicons
+                                name="menu-outline"
+                                color='green'
+                                size={30}
+                            />
+                        </TouchableWithoutFeedback>
                     </View>
-                    <View style={styles.greetingContainer}>
-                        <View style={styles.developer}>
+                    <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <Title>Developers</Title></View>
 
-                            <ScrollView showsVerticalScrollIndicator={false} style={{ height: '55%', width: '100%' }}>
-                                <Title>TecXact Inc Nig. Ltd</Title>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, color: 'grey' }}>TecXact fully known as Technology Exact is a mobile application and software development company whoose goal is to improve how Nigeria carry out daily business by providing affordable softwares for small business in Nigeria.</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, fontWeight: 'bold' }}>TecXact offer services such as: </Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Creating a static business websites</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Creating a dynamic business website</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Implementing card payment feature on business website for online purchases</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Managing of client website</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for staffs only</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for customer</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} setting up business custom mail address e.g support@dma.org (More professional) instead of dma@gmail.com,</Text>
-                                <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Periodical client system maintenance</Text>
+                </View>
+                <View style={styles.greetingContainer}>
+                    <View style={styles.developer}>
 
-                            </ScrollView>
-                            <View style={{}}>
-                                <View style={{ alignSelf: 'center' }}>
-                                    <Image
-                                        style={{ width: 45, height: 45 }}
-                                        source={require('../../../assets/logo.png')}
-                                    /></View>
-                                <View style={{ alignSelf: 'center' }}>
-                                    <Title>By</Title></View>
-                                <View style={{ alignSelf: 'center', paddingTop: 10 }}>
-                                    <Image
-                                        style={{ width: 90, height: 45 }}
-                                        source={require('../../../assets/dev.png')}
-                                    /></View>
-                            </View>
+                        <ScrollView showsVerticalScrollIndicator={false} style={{ height: '55%', width: '100%' }}>
+                            <Title>TecXact Inc Nig. Ltd</Title>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, color: 'grey' }}>TecXact fully known as Technology Exact is a mobile application and software development company whoose goal is to improve how Nigeria carry out daily business by providing affordable softwares for small business in Nigeria.</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, fontWeight: 'bold' }}>TecXact offer services such as: </Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Creating a static business websites</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Creating a dynamic business website</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Implementing card payment feature on business website for online purchases</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Managing of client website</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for staffs only</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for customer</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} setting up business custom mail address e.g support@dma.org (More professional) instead of dma@gmail.com,</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Periodical client system maintenance</Text>
+
+                        </ScrollView>
+                        <View style={{}}>
+                            <View style={{ alignSelf: 'center' }}>
+                                <Image
+                                    style={{ width: 45, height: 45 }}
+                                    source={require('../../../assets/logo.png')}
+                                /></View>
+                            <View style={{ alignSelf: 'center' }}>
+                                <Title>By</Title></View>
+                            <View style={{ alignSelf: 'center', paddingTop: 10 }}>
+                                <Image
+                                    style={{ width: 90, height: 45 }}
+                                    source={require('../../../assets/dev.png')}
+                                /></View>
                         </View>
                     </View>
+                </View>
 
-                </SafeArea>
+                {/* </SafeArea> */}
             </View>
         </>
     )

@@ -17,36 +17,36 @@ export const Team = ({ navigation }) => {
     return (
         <>
             <View style={styles.container}>
-                <SafeArea>
-                    <View style={styles.topBar}>
-                        <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
-                                <Ionicons
-                                    name="menu-outline"
-                                    color='green'
-                                    size={30}
-                                />
-                            </TouchableWithoutFeedback>
-                        </View>
-                        <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
-                            <Title>Strategy</Title></View>
-
+                {/* <SafeArea> */}
+                <View style={styles.topBar}>
+                    <View style={{ position: 'absolute', left: '4%', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <TouchableWithoutFeedback onPress={() => { navigation.openDrawer(); }} >
+                            <Ionicons
+                                name="menu-outline"
+                                color='green'
+                                size={30}
+                            />
+                        </TouchableWithoutFeedback>
                     </View>
-                    <View style={styles.greetingContainer}>
-                        <View style={styles.plan}>
-                            <View style={{ paddingBottom: 10 }}>
-                                <Title>Team members</Title></View>
-                            <FlatList style={{ height: '65%' }}
-                                data={data}
-                                renderItem={({ item }) => {
-                                    return (
-                                        <TeamCard navigation={navigation} data={item} />
-                                    )
-                                }} />
-                        </View>
-                    </View>
+                    <View style={{ position: 'absolute', justifyContent: 'center', bottom: 0, top: 0 }}>
+                        <Title>Strategy</Title></View>
 
-                </SafeArea>
+                </View>
+                <View style={styles.greetingContainer}>
+                    <View style={styles.plan}>
+                        <View style={{ paddingBottom: 10 }}>
+                            <Title>Team members</Title></View>
+                        <FlatList style={{ height: '65%' }}
+                            data={data}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TeamCard navigation={navigation} data={item} />
+                                )
+                            }} />
+                    </View>
+                </View>
+
+                {/* </SafeArea> */}
             </View>
         </>
     )

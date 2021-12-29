@@ -12,6 +12,7 @@ export const updateDatabase = (item, type) => {
                 Venue: data.Venue,
                 Cost: data.Cost,
                 Vote: data.Vote,
+                Down: data.Down,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             })
         });
@@ -83,7 +84,7 @@ export const finished = (data, type) => {
 }
 
 
-
+// Vote related functions
 export const eventVote = async (sendData) => {
     const event = [];
     await firebase.firestore().collection('Campaign').doc('Events').collection('pending').where('Vote', '!=', null).get().then((snapshot) => {
@@ -97,7 +98,7 @@ export const eventVote = async (sendData) => {
     sendData(event)
 }
 
-export const voteAnEvent = async (data) => {
+export const upvoteAnEvent = async (data) => {
     await firebase.firestore().collection('Campaign').doc('Events').collection('pending').doc(data.Id).get().then(item => { countVote(data, item.data().Vote) })
 
 
@@ -110,12 +111,56 @@ const countVote = (data, vote) => {
         Venue: data.Venue,
         Cost: data.Cost,
         Vote: vote + 1,
+        Down: data.Down,
         createdAt: data.createdAt
 
     })
 }
 
+export const downvoteAnEvent = async (data) => {
+    await firebase.firestore().collection('Campaign').doc('Events').collection('pending').doc(data.Id).get().then(item => { dcountVote(data, item.data().Down) })
 
+
+}
+const dcountVote = (data, vote) => {
+    firebase.firestore().collection('Campaign').doc('Events').collection('pending').doc(data.Id).set({
+        Id: data.Id,
+        Event: data.Event,
+        Date: data.Date,
+        Venue: data.Venue,
+        Cost: data.Cost,
+        Vote: data.Vote,
+        Down: vote + 1,
+        createdAt: data.createdAt
+
+    })
+}
+
+export const approveDeclineEvent = (type, data) => {
+    if (type == 'approved') {
+        firebase.firestore().collection('Campaign').doc('Events').collection('approved').doc(data.Id).set({
+            Id: data.Id,
+            Event: data.Event,
+            Date: data.Date,
+            Venue: data.Venue,
+            Cost: data.Cost,
+            Vote: data.Vote,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        firebase.firestore().collection('Campaign').doc('Events').collection('pending').doc(data.Id).delete()
+    }
+    else if (type == 'declined') {
+        firebase.firestore().collection('Campaign').doc('CompletedEvents').collection('DownVotedEvent').doc(data.Id).set({
+            Event: data.Event,
+            Date: data.Date,
+            Venue: data.Venue,
+            Cost: data.Cost,
+            Vote: data.Vote,
+            declinedAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        firebase.firestore().collection('Campaign').doc('Events').collection('pending').doc(data.Id).delete()
+    }
+}
 
 
 
@@ -151,6 +196,7 @@ export const changeBudget = async (data, cost) => {
 
 export const budgetTotal = async (send) => {
     const totalCost = []
+    let total = 0;
     await firebase.firestore().collection('Campaign').doc('Events').collection('approved').get().then((snapshot) => {
         snapshot.forEach((doc) => {
             // doc.data() is never undefined for query doc snapshots
@@ -159,5 +205,9 @@ export const budgetTotal = async (send) => {
         });
 
     })
-    send(totalCost)
+    totalCost.forEach((item) => {
+        total = total + item
+
+    })
+    send(total)
 }
