@@ -7,7 +7,7 @@ import { finished } from '../app_services/firebase_database/data.manipulate';
 //import {Colors} from 'react-native-elements'
 
 
-export const EventCard = ({ data, from, refresh, admin }) => {
+export const EventCard = ({ data, from, refresh, admin, internet }) => {
     const [red, setRed] = useState(false);
     const [togo, setTogo] = useState(true)
     var given = moment(data.Date, "DD/MM/YYYY");
@@ -24,19 +24,29 @@ export const EventCard = ({ data, from, refresh, admin }) => {
             finished(data, 'finish')
         }
     }, [])
+
+    const doFinished = (type) => {
+        if (internet) {
+            finished(data, type)
+            refresh()
+        }
+        else {
+            alert('Error: Unstable internet connection')
+        }
+    }
     return (
         <TouchableWithoutFeedback
             onPress={() => { admin ? setOption(true) : console.log("Not an Admin") }} >
             <View style={[styles.mainCardView, { flexDirection: option ? 'column' : 'row' }]}>
                 {option ? <><View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
-                    {from && <TouchableOpacity onPress={() => { finished(data, 'finish'); refresh() }} style={{ width: '45%', height: '80%', justifyContent: 'center', marginRight: '3%', backgroundColor: 'green', borderRadius: 10 }}>
+                    {from && <TouchableOpacity onPress={() => { doFinished('finish') }} style={{ width: '45%', height: '80%', justifyContent: 'center', marginRight: '3%', backgroundColor: 'green', borderRadius: 10 }}>
                         <Ionicons
                             name="checkmark-outline"
                             color='white'
                             size={15}
                             style={{ alignSelf: 'center' }}
                         /><View ><Text style={{ textAlign: 'center', color: 'white', }}>Event Finished</Text></View></TouchableOpacity>}
-                    <TouchableOpacity onPress={() => { finished(data, 'delete'); refresh() }} style={{ width: '45%', height: '80%', justifyContent: 'center', backgroundColor: 'red', borderRadius: 10 }}>
+                    <TouchableOpacity onPress={() => { doFinished('delete') }} style={{ width: '45%', height: '80%', justifyContent: 'center', backgroundColor: 'red', borderRadius: 10 }}>
                         <Ionicons
                             name="close-outline"
                             color='white'
@@ -46,7 +56,7 @@ export const EventCard = ({ data, from, refresh, admin }) => {
                         <View ><Text style={{ textAlign: 'center', color: 'white' }}>Event Cancelled</Text></View></TouchableOpacity>
 
                 </View>
-                    <TouchableOpacity onPress={() => setOption(false)}><View style={{ alignSelf: 'center', paddingBottom: 5, }}><Text>Go Back</Text></View></TouchableOpacity>
+                    <TouchableOpacity onPress={() => setOption(false)}><View style={{ alignSelf: 'center', paddingBottom: 5, }}><Text style={{ fontWeight: 'bold' }}>Go Back</Text></View></TouchableOpacity>
 
                 </>
                     : <><View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -88,7 +98,7 @@ export const EventCard = ({ data, from, refresh, admin }) => {
                                         fontSize: 10,
                                         paddingLeft: '0%'
                                     }}>
-                                    {time + ' DAY(S) TO GO'}
+                                    {togo && (time + ' DAY(S) TO GO')}
                                 </Text>
                             </View>
                         </View>

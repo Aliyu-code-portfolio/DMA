@@ -20,6 +20,7 @@ import {
 import { HomeDrawer } from './home/home_navigate/home.drawer'
 import { CampaignDrawer } from './campaign/campaign_navigate/campaign.drawer'
 import { Chat } from '../app_infrastructure/app_screens/chat/chat'
+import { TeamChatNav } from './team_chat/team.chat.navigate'
 import { PlanDrawer } from './plan/plan_navigate/plan.drawer'
 import { Developer } from './developer/developer'
 import { AboutDrawer } from './about/about_navigate/about.drawer'
@@ -65,7 +66,7 @@ export function AppDrawer({ navigation }) {
             <Drawer.Screen name="HomeNav" component={HomeDrawer} options={{ headerShown: false }} />
             <Drawer.Screen name="Campaign" component={CampaignDrawer} options={{ headerShown: false }} />
             <Drawer.Screen name="ChatApp" component={Chat} options={{ headerShown: false }} />
-            <Drawer.Screen name="Ok" component={HomeDrawer} options={{ headerShown: false }} />
+            <Drawer.Screen name="TeamChats" component={TeamChatNav} options={{ headerShown: false }} />
             <Drawer.Screen name="Planning" component={PlanDrawer} options={{ headerShown: false }} />
             <Drawer.Screen name="Developers" component={Developer} options={{ headerShown: false }} />
             <Drawer.Screen name="About" component={AboutDrawer} options={{ headerShown: false }} />

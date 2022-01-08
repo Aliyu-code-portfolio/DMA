@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
 import {
     useTheme,
     Avatar,
@@ -31,14 +31,26 @@ import { themeContext } from '../../App';
 import { clearAsyncStorage } from "../app_services/authentication/asyncStorage";
 import { LogOutUser } from "../app_services/authentication/network";
 import { SafeArea } from '../app_infrastructure/utils/safe-area.component';
+import { myData } from '../app_services/authentication/network/user'
 
 export function DrawerTemplete(props) {
     //const { isDarkTheme, toggleTheme } = useContext(themeContext)
     const { toggleTheme } = useContext(themeContext)
     const isDarkTheme = false
     const [focused, setFocus] = useState(1);
+    const [user, setUser] = useState(null);
+    const [image, setImage] = useState()
     const paperTheme = useTheme();
 
+    //Functions
+    useEffect(() => {
+        myData(useData)
+    }, [])
+
+    const useData = (info) => {
+        setUser(info)
+        setImage(info.profileImg)
+    }
     const logout = () => {
         LogOutUser()
             .then(() => {
@@ -60,13 +72,14 @@ export function DrawerTemplete(props) {
                             <View style={{ flexDirection: 'row', marginTop: 15 }}>
                                 <Avatar.Image
                                     source={{
-                                        uri: 'https://placeimg.com/140/140/any'
+                                        uri: image
                                     }}
-                                    size={60}
+                                    size={70}
+                                    style={{ backgroundColor: image ? 'transparent' : 'green' }}
                                 />
-                                <View style={{ marginLeft: 15, flexDirection: 'column' }}>
-                                    <Title style={styles.title}>John Doe</Title>
-                                    <Caption style={styles.caption}>Manager</Caption>
+                                <View style={{ marginLeft: 15, flexDirection: 'column', justifyContent: 'center', }}>
+                                    <Title style={styles.title}>{user && user.name}</Title>
+                                    <Caption style={styles.caption}>{user && (user.admin ? 'Management' : 'Member')}</Caption>
                                 </View>
                             </View>
 
@@ -124,7 +137,7 @@ export function DrawerTemplete(props) {
                                 )}
                                 label="Team Chat"
                                 style={{ borderColor: focused == 4 ? 'green' : 'white', borderWidth: 1 }}
-                                onPress={() => { setFocus(4); props.navigation.navigate('SettingsScreen') }}
+                                onPress={() => { setFocus(4); props.navigation.navigate('TeamChats') }}
                             />
                             <DrawerItem
                                 icon={({ color, size }) => (
@@ -185,7 +198,22 @@ export function DrawerTemplete(props) {
                             />
                         )}
                         label="Sign Out"
-                        onPress={() => { logout() }}
+                        onPress={() => {
+                            Alert.alert(
+                                "Logout",
+                                "Are you sure to log out",
+                                [
+                                    {
+                                        text: "Yes",
+                                        onPress: () => logout(),
+                                    },
+                                    {
+                                        text: "No",
+                                    },
+                                ],
+                                { cancelable: false }
+                            )
+                        }}
                     />
                 </Drawer.Section>
             </View>
@@ -200,6 +228,8 @@ const styles = StyleSheet.create({
     },
     userInfoSection: {
         paddingLeft: 20,
+        borderTopColor: '#f4f4f4',
+
     },
     title: {
         fontSize: 16,

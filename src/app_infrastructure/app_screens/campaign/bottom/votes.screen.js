@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Text, StyleSheet, View, TouchableWithoutFeedback, TouchableOpacity, Dimensions, Image } from 'react-native'
-
+import NetInfo from "@react-native-community/netinfo";
 import { Ionicons } from '@expo/vector-icons';
 import { Button, } from 'react-native-paper';
 
@@ -15,18 +15,41 @@ const windowHeight = Dimensions.get('window').height;
 
 //Add vote custom input selector
 //adding vote input to database when initiated
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 export const Votes = ({ navigation }) => {
-    const [vote, setVote] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
+    const [isInternetReachable, setIsInternetReachable] = useState(false)
     const [events, setEvents] = useState([])
 
 
-    useEffect(() => {
+    const networkBack = () => {
         eventVote(retrieveDatabaseData)
+    }
+    useEffect(async () => {
+        if (isInternetReachable) {
+            networkBack()
+        }
+    }, [isInternetReachable])
+
+    useEffect(() => {
+        const subscribe = NetInfo.addEventListener(state => {
+            setIsInternetReachable(state.isInternetReachable)
+        });
     }, [])
+
     //Functions
     const retrieveDatabaseData = (data) => {
         setEvents(data)
     }
+    const reload = () => {
+        eventVote(retrieveDatabaseData)
+    }
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => { reload(); setRefreshing(false) });
+    }, []);
     return (
         <>
             <View style={styles.container}>
@@ -62,7 +85,7 @@ export const Votes = ({ navigation }) => {
                             keyExtractor={item => item.Id}
                             renderItem={({ item }) => {
                                 return (
-                                    <VoteCard data={item} />
+                                    <VoteCard data={item} refresh={reload} internet={isInternetReachable} />
                                 )
                             }
                             }
@@ -71,6 +94,8 @@ export const Votes = ({ navigation }) => {
                                 color: 'green'
                             }}
                             showsVerticalScrollIndicator={false}
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
 
                         /> : <View style={{ paddingTop: '45%', alignSelf: 'center' }}><Text>Waiting for data</Text></View>
                         }

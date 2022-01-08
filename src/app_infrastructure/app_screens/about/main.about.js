@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, Dimensions, ScrollView, Platform } from 'react-native'
+import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, Dimensions, ScrollView, ActivityIndicator } from 'react-native'
+import NetInfo from "@react-native-community/netinfo";
 
 import { Ionicons } from '@expo/vector-icons';
-
+import { getAbout } from '../../../app_services/firebase_database/about.get'
 
 import { SafeArea } from '../../../app_infrastructure/utils/safe-area.component'
 import { Title, MediumText, SmallText } from '../botton.styles'
@@ -10,8 +11,33 @@ import { Title, MediumText, SmallText } from '../botton.styles'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export const About = ({ navigation }) => {
+    const [para1, setPara1] = useState()
+    const [para2, setPara2] = useState()
+    const [para3, setPara3] = useState()
+    const [isInternetReachable, setIsInternetReachable] = useState(false)
+
+    const networkBack = () => {
+        getAbout(pullData)
+    }
+    useEffect(async () => {
+        if (isInternetReachable) {
+            networkBack()
+        }
+    }, [isInternetReachable])
+
+    useEffect(() => {
+        const subscribe = NetInfo.addEventListener(state => {
+            setIsInternetReachable(state.isInternetReachable)
+        });
+    }, [])
 
 
+    const pullData = (data1, data2, data3) => {
+        console.log(data3)
+        setPara1(data1)
+        setPara2(data2)
+        setPara3(data3)
+    }
 
     return (
         <>
@@ -33,22 +59,27 @@ export const About = ({ navigation }) => {
                 </View>
                 <View style={styles.greetingContainer}>
                     <View style={styles.developer}>
-
-                        <ScrollView showsVerticalScrollIndicator={false} style={{ height: '45%', width: '100%' }}>
+                        {para1 ? <ScrollView showsVerticalScrollIndicator={false} style={{ height: '45%', width: '100%' }}>
                             <Title>Dr. Musa Adamu (DMA)</Title>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, color: 'grey' }}>TecXact fully known as Technology Exact is a mobile application and software development company whoose goal is to improve how Nigeria carry out daily business by providing affordable softwares for small business in Nigeria.</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, fontWeight: 'bold' }}>TecXact offer services such as: </Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Creating a static business websites</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Creating a dynamic business website</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Implementing card payment feature on business website for online purchases</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Managing of client website</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Developing a business or company cross platform mobile application for staffs only</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Developing a business or company cross platform mobile application for customer</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} setting up business custom mail address e.g support@dma.org (More professional) instead of dma@gmail.com,</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{'\u2B24'} Periodical client system maintenance</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, color: 'grey' }}>{para1 && para1.text}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, marginBottom: 5, fontWeight: 'bold', color: 'green' }}>Highlights </Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{para2 && para2.text1}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, marginBottom: 5 }}>{para2 && para2.text2}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text1}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text2}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text3}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text4}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text5}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text6}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text7}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text8}</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'green' }}>{'\u2B24'}  {para3 && para3.text9}</Text>
 
-                        </ScrollView>
 
+                        </ScrollView> :
+                            <View style={{ paddingTop: '50%' }}>
+                                <ActivityIndicator color='green' size={50} animating={true} />
+                            </View>}
 
                     </View>
                 </View>

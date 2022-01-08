@@ -6,7 +6,10 @@ export default StyleSheet.create({
     backgroundColor: '#4CC417',
     borderBottomWidth: 1,
     borderColor: color.SILVER,
-    borderRadius: 30
+    borderRadius: 30,
+    width: "95%",
+    alignSelf: 'center',
+
   },
   cardItemStyle: {
     backgroundColor: '#77DD77',

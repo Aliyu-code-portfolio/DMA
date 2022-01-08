@@ -1,6 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
-const SignUpRequest = async (email, password) => {
+export const SignUpRequest = async (email, password) => {
   const auth = getAuth()
   try {
     return await createUserWithEmailAndPassword(auth, email, password);
@@ -8,5 +8,3 @@ const SignUpRequest = async (email, password) => {
     return error;
   }
 };
-
-export default SignUpRequest;

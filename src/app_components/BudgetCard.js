@@ -4,16 +4,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { changeBudget } from '../app_services/firebase_database/data.manipulate';
 //import {Colors} from 'react-native-elements'
 
-export const BudgetCard = ({ data }) => {
+export const BudgetCard = ({ data, refresh, internet }) => {
     const [change, setChange] = useState(false)
     const [newCost, setNewCost] = useState(null)
 
     //Functions
 
     const finished = () => {
-        changeBudget(data, newCost)
-        setChange(false)
-        //then trigger a refresh from database
+        if (internet) {
+            changeBudget(data, newCost)
+            setChange(false)
+            refresh()
+        }
+        else {
+            alert('Error: Unstable internet connection')
+        }
     }
     return (
         <TouchableWithoutFeedback

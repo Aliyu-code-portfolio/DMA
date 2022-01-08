@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Text, StyleSheet, View, Picker, TouchableWithoutFeedback, TextInput, Dimensions, Platform, Image, FlatList } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import NetInfo from "@react-native-community/netinfo";
 import { Button, } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import uuid from 'react-native-uuid';
@@ -18,17 +19,22 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 //Things left to add
 // Approved event can't be mnodified, pending can be edited or approved or deleted
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 export const Events = ({ navigation }) => {
     //menu selector
     const [show, setShow] = useState(true)
     // Check database for admin status
     const [admin, setAdmin] = useState(false)
     const [adding, setAdding] = useState(false)
+    const [isInternetReachable, setIsInternetReachable] = useState(false)
     const [pending, setPending] = useState([])
     const [approved, setApproved] = useState([])
 
     // will help fix wrong DB update
     const [loaded, setLoaded] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
 
     //Event informations
     const [error, setError] = useState(null)
@@ -63,10 +69,22 @@ export const Events = ({ navigation }) => {
     const showDatepicker = () => {
         showMode('date');
     };
+
     // onMount functions
-    useEffect(() => {
+    const networkBack = () => {
         isAdmin(isAdministrator)
         retrieveData(retrieveDatabaseData)
+    }
+    useEffect(async () => {
+        if (isInternetReachable) {
+            networkBack()
+        }
+    }, [isInternetReachable])
+
+    useEffect(() => {
+        const subscribe = NetInfo.addEventListener(state => {
+            setIsInternetReachable(state.isInternetReachable)
+        });
     }, [])
 
     useEffect(() => {
@@ -95,21 +113,31 @@ export const Events = ({ navigation }) => {
         setLoaded(false)
         retrieveData(retrieveDatabaseData)
     }
-    const onFinish = () => {
-        const id = uuid.v4();
-        setError(null)
-        setLoaded(true)
-        if (addto == 'pend') {
-            setPending([...pending, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable, 'Down': 0 }])
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => { reload(); setRefreshing(false) });
+    }, []);
 
+    const onFinish = () => {
+        if (isInternetReachable) {
+            const id = uuid.v4();
+            setError(null)
+            setLoaded(true)
+            if (addto == 'pend') {
+                setPending([...pending, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable, 'Down': 0 }])
+
+            }
+            else if (addto == 'approve') {
+                setApproved([...approved, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable }])
+            }
+            setDate(null);
+            setAddto("pend")
+            setVotable(null)
+            setAdding(false)
         }
-        else if (addto == 'approve') {
-            setApproved([...approved, { 'Id': id, 'Event': todo, 'Date': date, 'Venue': venue, 'Cost': cost, 'Vote': votable }])
+        else {
+            alert('Unstable internet connection')
         }
-        setDate(null);
-        setAddto("pend")
-        setVotable(null)
-        setAdding(false)
     }
 
     return (
@@ -249,7 +277,7 @@ export const Events = ({ navigation }) => {
                                     keyExtractor={item => item.Id}
                                     renderItem={({ item }) => {
                                         return (
-                                            <EventCard data={item} from={true} refresh={reload} admin={admin} />
+                                            <EventCard data={item} from={true} refresh={reload} admin={admin} internet={isInternetReachable} />
                                         )
                                     }
                                     }
@@ -258,7 +286,8 @@ export const Events = ({ navigation }) => {
                                         color: 'green'
                                     }}
                                     showsVerticalScrollIndicator={false}
-
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
                                 /> : <FlatList
                                     data={pending}
                                     renderItem={({ item }) => {
@@ -273,7 +302,8 @@ export const Events = ({ navigation }) => {
                                         color: 'green'
                                     }}
                                     showsVerticalScrollIndicator={false}
-
+                                    refreshing={refreshing}
+                                    onRefresh={onRefresh}
                                 />}
                             </View>
                             {admin && (<View style={{ alignItems: 'center', paddingTop: 20, height: '2%', }}>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from "react";
-import { SafeAreaView, Alert, Text, View, FlatList } from "react-native";
-import ImagePicker from "react-native-image-picker";
+import { SafeAreaView, Alert, Text, View, FlatList, AsyncStorage } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 import { Profile, ShowUsers, StickyHeader } from "../../component";
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database'
@@ -68,57 +68,50 @@ export default ({ navigation }) => {
     }
   }, []);
 
-  const selectPhotoTapped = () => {
-    const options = {
-      storageOptions: {
-        skipBackup: true,
-      },
-    };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      console.log("Response = ", response);
-
-      if (response.didCancel) {
-        console.log("User cancelled photo picker");
-      } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
-      } else if (response.customButton) {
-        console.log("User tapped custom button: ", response.customButton);
-      } else {
-        // Base 64 image:
-        let source = "data:image/jpeg;base64," + response.data;
-        dispatchLoaderAction({
-          type: LOADING_START,
-        });
-        UpdateUser(uuid, source)
-          .then(() => {
-            setUserDetail({
-              ...userDetail,
-              profileImg: source,
-            });
-            dispatchLoaderAction({
-              type: LOADING_STOP,
-            });
-          })
-          .catch(() => {
-            alert(err);
-            dispatchLoaderAction({
-              type: LOADING_STOP,
-            });
-          });
-      }
+  const selectPhotoTapped = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [5, 5],
+      quality: 1,
     });
+
+
+    if (!result.cancelled) {
+      dispatchLoaderAction({
+        type: LOADING_START,
+      });
+      UpdateUser(uuid, result.uri)
+        .then(() => {
+          setUserDetail({
+            ...userDetail,
+            profileImg: result.uri,
+          });
+          dispatchLoaderAction({
+            type: LOADING_STOP,
+          });
+        }).catch(() => {
+          alert(err);
+          dispatchLoaderAction({
+            type: LOADING_STOP,
+          });
+        });
+
+
+    }
+
+
   };
 
   // * ON IMAGE TAP
   const imgTap = (profileImg, name) => {
     if (!profileImg) {
-      navigation.navigate("ShowFullImg", {
+      navigation.navigate("Show Full Img", {
         name,
         imgText: name.charAt(0),
       });
     } else {
-      navigation.navigate("ShowFullImg", { name, img: profileImg });
+      navigation.navigate("Show Full Img", { name, img: profileImg });
     }
   };
 

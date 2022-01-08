@@ -6,9 +6,11 @@ import NetInfo from "@react-native-community/netinfo";
 import { Ionicons } from '@expo/vector-icons';
 import { Article } from '../../../../app_services/news/articles'
 import { getNews } from '../../../../app_apis/apis/getNews'
+import { myData } from '../../../../app_services/authentication/network/user'
+
 
 import { SafeArea } from '../../../utils/safe-area.component'
-import { Title, MediumText, SmallText } from '../../botton.styles'
+import { MediumText, SmallText } from '../../botton.styles'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -20,19 +22,40 @@ export const Home = ({ navigation }) => {
     const [articles, setArticles] = useState(null)
     const [refreshing, setRefreshing] = useState(false)
     const [local, setLocal] = useState(true)
-
+    const [greet, setGreet] = useState()
     const [isConnected, setConnected] = useState(false)
+    const [isInternetReachable, setIsInternetReachable] = useState(false)
+    const [user, setUser] = useState(null);
 
 
+
+    const networkBack = () => {
+        myData(useData)
+        fetchNews()
+    }
 
     useEffect(async () => {
-        const response = await NetInfo.fetch();
-        setConnected(response.isConnected)
-        fetchNews();
+        if (isInternetReachable) {
+            networkBack()
+        }
+    }, [isInternetReachable])
+
+
+    useEffect(() => {
+        const subscribe = NetInfo.addEventListener(state => {
+            setConnected(state.isConnected);
+            setIsInternetReachable(state.isInternetReachable)
+        });
+        greeting()
     }, [])
+
     useEffect(() => {
         fetchNews();
     }, [local])
+
+    const useData = (info) => {
+        setUser(info)
+    }
 
 
     const onRefresh = React.useCallback(() => {
@@ -49,7 +72,18 @@ export const Home = ({ navigation }) => {
 
     };
 
-
+    const greeting = () => {
+        var hours = new Date().getHours();
+        if (hours < 12) {
+            setGreet('Good morning')
+        }
+        else if (hours >= 12 && hours <= 15) {
+            setGreet('Good afternoon')
+        }
+        else if (hours >= 15 && hours <= 24) {
+            setGreet('Good evening')
+        }
+    }
 
     return (
         <>
@@ -79,9 +113,9 @@ export const Home = ({ navigation }) => {
                         /></View>
                 </View>
                 <View style={styles.greetingContainer}>
-                    <Title>Hi, Diko!</Title>
+                    <Text style={{ fontFamily: 'Oswald_400Regular', fontSize: 19 }}>{greet}{user && (', ' + user.title + ' ' + user.name)}</Text>
                     <View style={{ paddingTop: 4 }} />
-                    {articles && <MediumText>These are the headline news today.</MediumText>}
+                    {articles && <MediumText>Headline news</MediumText>}
                 </View>
 
                 {articles ? <FlatList

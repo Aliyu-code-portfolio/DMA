@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableHighlight, Image } from 'react-native';
+import { View, TouchableWithoutFeedback, Image, Linking } from 'react-native';
 import { Text, Card, Divider } from 'react-native-elements';
 import moment from 'moment';
 
@@ -7,8 +7,13 @@ export const Article = ({ article }) => {
 
     const time = moment(article.publishedAt || moment.now()).fromNow();
 
+    const openNews = () => {
+        Linking
+            .openURL(article.url)
+            .catch(err => console.error('Error', err));
+    }
     return (
-        <TouchableHighlight>
+        <TouchableWithoutFeedback onPress={() => openNews()}>
             <Card
 
                 featuredTitleStyle={{
@@ -53,7 +58,7 @@ export const Article = ({ article }) => {
                     </Text>
                 </View>
             </Card>
-        </TouchableHighlight>
+        </TouchableWithoutFeedback>
     );
 
 }

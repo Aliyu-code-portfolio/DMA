@@ -9,13 +9,13 @@ import { userCount } from '../app_services/authentication/network/user'
 //Pull to refresh
 //Moving event from pending to approved automatically after vote win
 //remain to get current number of members and determine if event is accepted with progress bar
-export const VoteCard = ({ data }) => {
+export const VoteCard = ({ data, refresh, internet }) => {
     const [haveVote, setHaveVote] = useState(true)
     const [voting, setVoting] = useState(false)
     //retrive accurate number of members from database
     //const [members, setMembers] = useState(0)
     const [progress, setProgress] = useState(0);
-    let id = data.Id
+
 
 
 
@@ -29,7 +29,7 @@ export const VoteCard = ({ data }) => {
     //locally store vote history
     const saveHaveVoted = (haveVoted) => {
         try {
-            AsyncStorage.setItem(id, JSON.stringify(haveVoted))
+            AsyncStorage.setItem(data.Id, JSON.stringify(haveVoted))
         } catch (e) {
             console.log(e)
         }
@@ -38,7 +38,7 @@ export const VoteCard = ({ data }) => {
     //load back locally stored data
     const loadHaveVoted = async () => {
         try {
-            const item = await AsyncStorage.getItem(id)
+            const item = await AsyncStorage.getItem(data.Id)
             if (item && JSON.parse(item).length) {
                 setHaveVote(false)
             }
@@ -55,15 +55,21 @@ export const VoteCard = ({ data }) => {
     }
 
     const finished = (item) => {
-        if (item) {
-            upvoteAnEvent(data)
+        console.log(internet)
+        if (internet) {
+            if (item) {
+                upvoteAnEvent(data)
+            }
+            else {
+                downvoteAnEvent(data)
+            }
+            saveHaveVoted('yes')
+            setHaveVote(false)
+            refresh()
         }
         else {
-            downvoteAnEvent(data)
+            alert('Failed: Unstable internet connection')
         }
-        saveHaveVoted('yes')
-        setHaveVote(false)
-
     }
     const getProgress = (members) => {
         if (members % 2 == 0) {

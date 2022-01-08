@@ -11,38 +11,38 @@ import {
 } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { globalStyle, color, appStyle } from "../../utility";
-import styles from "./styles";
-import { InputField, ChatBox } from "../../component";
-import firebase from "../../firebase/config";
-import { senderMsg, recieverMsg } from "../../network";
-import { deviceHeight } from "../../utility/styleHelper/appStyle";
-import { smallDeviceHeight } from "../../../../../../app_services/authentication/utility/constants";
+import { globalStyle, color, appStyle } from "../chat/src/utility";
+import styles from "./components/styles";
+import { InputField } from "../chat/src/component";
+import { ChatBox } from './components/chatBox'
+import firebase from "../chat/src/firebase/config";
+import { senderMsg } from "./components/messaging";
+import { myData } from '../../../app_services/authentication/network/user'
+import { deviceHeight } from "../chat/src/utility/styleHelper/appStyle";
+import { smallDeviceHeight } from "../../../app_services/authentication/utility/constants";
 
-const Chat = ({ route, navigation }) => {
-  const { params } = route;
-  const { name, img, imgText, guestUserId, currentUserId } = params;
+export const TeamChat = ({ navigation }) => {
   const [msgValue, setMsgValue] = useState("");
   const [messeges, setMesseges] = useState([]);
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: <Text>{name}</Text>,
-    });
-  }, [navigation]);
+  const [user, setUser] = useState();
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerTitle: <Text>{name}</Text>,
+  //   });
+  // }, [navigation]);
 
   useEffect(() => {
+    myData(useData)
     try {
       firebase
         .database()
-        .ref("messeges")
-        .child(currentUserId)
-        .child(guestUserId)
+        .ref("teammesseges")
         .on("value", (dataSnapshot) => {
           let msgs = [];
           dataSnapshot.forEach((child) => {
             msgs.push({
               sendBy: child.val().messege.sender,
-              recievedBy: child.val().messege.reciever,
+              username: child.val().messege.username,
               msg: child.val().messege.msg,
               img: child.val().messege.img,
             });
@@ -54,18 +54,22 @@ const Chat = ({ route, navigation }) => {
     }
   }, []);
 
+  const useData = (info) => {
+    setUser(info)
+  }
+
   const handleSend = () => {
     setMsgValue("");
     if (msgValue) {
-      senderMsg(msgValue, currentUserId, guestUserId, "")
+      senderMsg(msgValue, user.uuid, user.title + ' ' + user.name, "")
         .then(() => { })
         .catch((err) => alert(err));
 
       // * guest user
 
-      recieverMsg(msgValue, currentUserId, guestUserId, "")
-        .then(() => { })
-        .catch((err) => alert(err));
+      // recieverMsg(msgValue, currentUserId, guestUserId, "")
+      //   .then(() => { })
+      //   .catch((err) => alert(err));
     }
   };
 
@@ -80,15 +84,15 @@ const Chat = ({ route, navigation }) => {
 
 
     if (!result.cancelled) {
-      senderMsg(msgValue, currentUserId, guestUserId, result.uri)
+      senderMsg(msgValue, user.uuid, user.title + ' ' + user.name, result.uri)
         .then(() => { })
         .catch((err) => alert(err));
 
       // * guest user
 
-      recieverMsg(msgValue, currentUserId, guestUserId, result.uri)
-        .then(() => { })
-        .catch((err) => alert(err));
+      // recieverMsg(msgValue, currentUserId, guestUserId, result.uri)
+      //   .then(() => { })
+      //   .catch((err) => alert(err));
 
 
     }
@@ -100,7 +104,7 @@ const Chat = ({ route, navigation }) => {
 
   //   * On image tap
   const imgTap = (chatImg) => {
-    navigation.navigate("Show Full Img", { name, img: chatImg });
+    navigation.navigate("View", { img: chatImg });
   };
   return (
     <SafeAreaView style={[globalStyle.flex1, { backgroundColor: color.BLACK }]}>
@@ -122,6 +126,7 @@ const Chat = ({ route, navigation }) => {
                 <ChatBox
                   msg={item.msg}
                   userId={item.sendBy}
+                  username={item.username}
                   img={item.img}
                   onImgTap={() => imgTap(item.img)}
                 />
@@ -142,13 +147,13 @@ const Chat = ({ route, navigation }) => {
                   name="camera"
                   color={color.WHITE}
                   size={appStyle.fieldHeight}
-                  onPress={() => handleCamera()}
+                  onPress={() => user && handleCamera()}
                 />
                 <MaterialCommunityIcons
                   name="send-circle"
                   color={color.GREEN}
                   size={appStyle.fieldHeight}
-                  onPress={() => handleSend()}
+                  onPress={() => user && handleSend()}
                 />
               </View>
             </View>
@@ -158,5 +163,3 @@ const Chat = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
-
-export default Chat;

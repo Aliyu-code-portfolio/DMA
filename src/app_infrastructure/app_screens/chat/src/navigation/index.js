@@ -20,10 +20,11 @@ function NavContainer() {
       initialRouteName="Splash"
       screenOptions={{
         headerShown: true,
-        headerStyle: { backgroundColor: '#4CC417' },
+        headerStyle: { backgroundColor: 'white', color: 'black' },
         headerTitleStyle: {
           fontWeight: "bold",
           fontSize: 20,
+          color: 'black'
         },
         headerTintColor: color.WHITE,
         headerTitleAlign: "center",
@@ -42,10 +43,11 @@ function NavContainer() {
         }}
       />
       <Stack.Screen
-        name="ShowFullImg"
+        name="Show Full Img"
         component={ShowFullImg}
         options={{
           headerBackTitle: null,
+          headerTitle: ''
         }}
       />
       <Stack.Screen

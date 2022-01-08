@@ -1,8 +1,8 @@
 import firebase from 'firebase/compat/app';
 //import 'firebase/compat/auth'; //check stack overflow for change on v9 of firebase
 import 'firebase/compat/firestore';
-import React, { useState, createContext } from 'react';
-import { StatusBar } from "react-native";
+import React, { useState, useEffect, createContext } from 'react';
+import { Text, View, StatusBar } from 'react-native';
 import 'react-native-gesture-handler';
 import {
   NavigationContainer, DefaultTheme as NavigationDefaultTheme,
@@ -26,10 +26,25 @@ import { theme } from './src/app_infrastructure/theme'
 
 //import { AppDrawer } from './src/app_drawer_menu/index.drawer'
 import AccountNavigator from './src/app_services/authentication/navigation/index'
+import { getVersion } from './src/app_services/firebase_database/about.get'
 
 export const themeContext = createContext();
 export default function App() {
+  const appversion = 1.0;
+  const [latestVersion, setLatestVersion] = useState(true)
+  useEffect(() => {
+    getVersion(load)
+  }, [])
 
+  const load = (info) => {
+    if (appversion == info) {
+      setLatestVersion(true)
+
+    }
+    else {
+      setLatestVersion(false)
+    }
+  }
   const firebaseConfig = {
     apiKey: "AIzaSyBNN1t82sFc-CWUyyW8Mpsmo4zQnqot63s",
     authDomain: "dma-5c98f.firebaseapp.com",
@@ -85,19 +100,26 @@ export default function App() {
   //const Mytheme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
   const Mytheme = CustomDefaultTheme;
   return (
-    <StoreProvider>
-      <StatusBar barStyle="default" />
-      <ThemeProvider theme={theme}>
-        <PaperProvider theme={Mytheme}>
-          <themeContext.Provider value={{ toggleTheme, }}>
-            <NavigationContainer theme={Mytheme}>
-              <AccountNavigator />
-            </NavigationContainer>
-          </themeContext.Provider>
-        </PaperProvider>
-      </ThemeProvider>
-      <Loader />
-    </StoreProvider>
+    latestVersion ?
+      <StoreProvider>
+        <StatusBar barStyle="default" />
+        <ThemeProvider theme={theme}>
+          <PaperProvider theme={Mytheme}>
+            <themeContext.Provider value={{ toggleTheme, }}>
+              <NavigationContainer theme={Mytheme}>
+                <AccountNavigator />
+              </NavigationContainer>
+            </themeContext.Provider>
+          </PaperProvider>
+        </ThemeProvider>
+        <Loader />
+      </StoreProvider> :
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ height: '30%', width: '50%', borderRadius: 20, backgroundColor: 'grey', paddingTop: '10%' }}>
+          <Text style={{ fontSize: 32, fontWeight: 'bold', textAlign: 'center', color: 'white', alignSelf: 'center', justifyContent: 'center', fontFamily: 'Oswald_400Regular' }}>Ooops</Text>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: 'red', alignSelf: 'center', justifyContent: 'center', fontFamily: 'Oswald_400Regular' }}>This DMA version is outdated</Text>
+        </View>
+      </View>
   );
 }
 

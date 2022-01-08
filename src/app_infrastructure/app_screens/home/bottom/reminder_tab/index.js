@@ -12,7 +12,7 @@ class App extends Component {
 
     StatusBar.pushStackEntry({
       animated: true,
-      barStyle: 'dark-content'
+      barStyle: 'light-content'
     });
   }
 
@@ -22,8 +22,8 @@ class App extends Component {
       const calendars = await Calendar.getCalendarsAsync(
         Calendar.EntityTypes.EVENT
       );
-      console.log('Here are all your calendars:');
-      console.log({ calendars });
+      // console.log('Here are all your calendars:');
+      // console.log({ calendars });
     }
   };
 
@@ -37,13 +37,13 @@ class App extends Component {
       const calendars = await Calendar.getRemindersPermissionsAsync(
         Calendar.EntityTypes.REMINDER
       );
-      console.log('Here are all your calendars:');
-      console.log({ calendars });
+      //   console.log('Here are all your calendars:');
+      //   console.log({ calendars });
     }
   };
 
   render = () => (
-    <SafeAreaProvider style={{ backgroundColor: '#FFFFFF' }}>
+    <SafeAreaProvider style={{}}>
       <AppWrapper>
         <CalendarNavigation />
       </AppWrapper>

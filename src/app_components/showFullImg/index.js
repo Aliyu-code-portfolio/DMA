@@ -1,13 +1,13 @@
 import React, { useLayoutEffect, Fragment } from "react";
 import { Image, Text, View, StyleSheet } from "react-native";
-import { globalStyle, color } from "../../utility";
+import { globalStyle, color } from "../../app_services/authentication/utility";
 
-export default ({ route, navigation }) => {
+export const ShowFullImg = ({ route, navigation }) => {
   const { params } = route;
   const { name, img, imgText } = params;
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: <Text>{name}</Text>,
+      headerTitle: <Text>{name && name}</Text>,
     });
   }, [navigation]);
   return (

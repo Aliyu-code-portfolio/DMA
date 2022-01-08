@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { color, appStyle } from "../../utility";
+import { color, appStyle } from "../../chat/src/utility";
 
 export default StyleSheet.create({
   sendMessageContainer: {

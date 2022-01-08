@@ -1,7 +1,8 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image, TouchableWithoutFeedback } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
-//import {Colors} from 'react-native-elements'
+import { Avatar } from 'react-native-paper';
+
 
 export const TeamCard = ({ navigation, data }) => {
 
@@ -22,7 +23,7 @@ export const TeamCard = ({ navigation, data }) => {
                                 fontSize: 14,
                                 fontFamily: 'Lato_400Regular',
                             }}>
-                            {data.position}
+                            {data.admin ? 'Management' : 'Member'}
                         </Text>
                         <View
                             style={{
@@ -49,15 +50,15 @@ export const TeamCard = ({ navigation, data }) => {
                 </View>
                 <View
                     style={{
-                        height: 60,
-                        backgroundColor: 'green',
-                        borderWidth: 0,
-                        width: 10,
-                        marginLeft: -26,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 50,
                     }}>
+                    <Avatar.Image
+                        source={{
+                            uri: data.profileImg ? data.profileImg : ''
+                        }}
+                        size={100}
+
+                        style={{ alignContent: 'center', borderRadius: 40, backgroundColor: (data.profileImg ? 'transparent' : 'green') }}
+                    />
                 </View>
             </View>
         </TouchableWithoutFeedback>

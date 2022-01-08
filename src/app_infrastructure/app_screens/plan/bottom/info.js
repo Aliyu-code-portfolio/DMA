@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, StyleSheet, View, TouchableOpacity, Dimensions, Linking } from 'react-native'
+import { Text, StyleSheet, View, TouchableOpacity, Dimensions, Linking, TouchableWithoutFeedback } from 'react-native'
 
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-paper';
@@ -8,7 +8,7 @@ import { Title, MediumText, SmallText } from '../../botton.styles'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export const Info = ({ route }) => {
+export const Info = ({ route, navigation }) => {
     const { data } = route.params;
 
     const facebook = (fb) => {
@@ -42,25 +42,27 @@ export const Info = ({ route }) => {
             <View style={styles.container}>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignSelf: 'center', paddingTop: 12, }}>
-                        <Avatar.Image
-                            source={{
-                                uri: 'https://placeimg.com/140/140/any'
-                            }}
-                            size={110}
+                        <TouchableWithoutFeedback onPress={() => { (data.profileImg ? navigation.navigate('ViewImg', { name: data.name, img: data.profileImg }) : null) }}>
+                            <Avatar.Image
+                                source={{
+                                    uri: data.profileImg ? data.profileImg : ''
+                                }}
+                                size={110}
 
-                            style={{ alignContent: 'stretch', borderRadius: 40, backgroundColor: 'transparent' }}
-                        /></View>
-                    <View style={{ alignSelf: 'center', paddingTop: '3%' }}><Title>{data.title} {data.name}</Title><Text style={{ fontSize: 16, textAlign: 'center' }}>{data.position}</Text></View>
+                                style={{ alignContent: 'stretch', borderRadius: 40, backgroundColor: (data.profileImg ? 'transparent' : 'green') }}
+                            />
+                        </TouchableWithoutFeedback></View>
+                    <View style={{ alignSelf: 'center', paddingTop: '3%' }}><Title>{data.title} {data.name}</Title><Text style={{ fontSize: 16, textAlign: 'center' }}>{data.admin ? 'Management' : 'Member'}</Text></View>
                 </View>
                 <View style={{ paddingTop: '20%', paddingLeft: '4%', flex: 3 }}>
-                    <View style={{ flexDirection: 'row', paddingTop: '6%', alignContent: 'stretch' }}><Text style={{ color: 'grey', fontSize: 16, alignItems: 'stretch' }}>Gender: </Text ><Text style={{ fontSize: 16, }}>{data.gender}</Text></View>
+                    <View style={{ flexDirection: 'row', paddingTop: '6%', alignContent: 'stretch' }}><Text style={{ color: 'grey', fontSize: 16, alignItems: 'stretch' }}>Gender: </Text ><Text style={{ fontSize: 16, }}>{data.gender ? 'Male' : 'Female'}</Text></View>
                     <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Ethnic group: </Text><Text style={{ fontSize: 16, }}>{data.ethnic}</Text></View>
                     <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>State: </Text><Text style={{ fontSize: 16, }}>{data.state}</Text></View>
                     <View style={{ flexDirection: 'row', paddingTop: '6%', alignSelf: 'center' }}><Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, fontWeight: 'bold' }}>Contact Information</Text></View>
-                    <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Facebook: </Text><TouchableOpacity onPress={() => { facebook(data.fb) }}><Text style={{ fontSize: 16, color: 'green', }}>facebook.com/{data.fb}</Text></TouchableOpacity></View>
+                    <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Facebook: </Text>{data.fb ? <TouchableOpacity onPress={() => { facebook(data.fb) }}><Text style={{ fontSize: 16, color: 'green', }}>facebook.com/{data.fb}</Text></TouchableOpacity> : null}</View>
                     <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Email: </Text><TouchableOpacity onPress={() => { email(data.email) }}><Text style={{ fontSize: 16, color: 'green' }}>{data.email}</Text></TouchableOpacity></View>
-                    <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Phone: </Text><TouchableOpacity onPress={() => { call(data.tel) }}><Text style={{ fontSize: 16, color: 'green' }}>{data.tel}</Text></TouchableOpacity></View>
-                    <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Website: </Text><TouchableOpacity onPress={() => { webvisit(data.website) }}><Text style={{ fontSize: 16, color: 'green' }}>{data.website ? data.website : 'None'}</Text></TouchableOpacity></View>
+                    <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Phone: </Text><TouchableOpacity onPress={() => { call(data.phone) }}><Text style={{ fontSize: 16, color: 'green' }}>{data.phone}</Text></TouchableOpacity></View>
+                    <View style={{ flexDirection: 'row', paddingTop: '6%' }}><Text style={{ color: 'grey', fontSize: 16 }}>Website: </Text>{data.website ? <TouchableOpacity onPress={() => { webvisit(data.website) }}><Text style={{ fontSize: 16, color: 'green' }}>{data.website ? data.website : 'None'}</Text></TouchableOpacity> : null}</View>
                 </View>
             </View>
         </>

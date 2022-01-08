@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { Text, StyleSheet, View, TouchableWithoutFeedback, Image, Dimensions, FlatList, ActivityIndicator } from 'react-native'
+import { Text, StyleSheet, View, TouchableWithoutFeedback, Dimensions, FlatList, ActivityIndicator } from 'react-native'
 import NetInfo from "@react-native-community/netinfo";
-import { Ionicons } from '@expo/vector-icons';
 
-import { AllUsers } from '../../../../app_services/authentication/network/user'
+import { Ionicons } from '@expo/vector-icons';
 import { SafeArea } from '../../../utils/safe-area.component'
+import { RequestCard } from '../../../../app_components/RequestCard'
+import { AllRequests } from '../../../../app_services/authentication/network/user'
 import { Title, MediumText, SmallText } from '../../botton.styles'
-import { TeamCard } from '../../../../app_components/TeamCard'
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export const Team = ({ navigation }) => {
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+export const Admin = ({ navigation }) => {
     const [userData, setUserData] = useState()
+    const [refreshing, setRefreshing] = useState(false)
     const [isInternetReachable, setIsInternetReachable] = useState(false)
 
     const networkBack = () => {
-        AllUsers(loadData)
+        AllRequests(loadData)
     }
     useEffect(async () => {
         if (isInternetReachable) {
@@ -28,10 +33,13 @@ export const Team = ({ navigation }) => {
         });
     }, [])
 
-
     const loadData = (info) => {
         setUserData(info)
     }
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        wait(2000).then(() => { AllRequests(loadData); setRefreshing(false) });
+    }, []);
 
     return (
         <>
@@ -52,20 +60,28 @@ export const Team = ({ navigation }) => {
 
                 </View>
                 <View style={styles.greetingContainer}>
-                    <View style={styles.plan}>
-                        <View style={{ paddingBottom: 10 }}>
-                            <Title>Team members</Title></View>
-                        {userData ? <FlatList style={{ height: '65%' }}
-                            data={userData}
-                            renderItem={({ item }) => {
-                                return (
-                                    <TeamCard navigation={navigation} data={item} />
-                                )
-                            }} /> :
-                            <View style={{ paddingTop: '40%' }}>
-                                <ActivityIndicator color='green' size={50} animating={true} />
-                            </View>
-                        }
+                    <View style={styles.admin}>
+                        <Title> Signup Requests </Title>
+                        <View >
+                            <FlatList
+                                data={userData}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item }) => {
+                                    return (
+                                        <RequestCard data={item} navigation={navigation} internet={isInternetReachable} />
+                                    )
+                                }
+                                }
+                                contentContainerStyle={{
+                                    flexGrow: 1,
+                                    color: 'green',
+                                }}
+                                showsVerticalScrollIndicator={false}
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                            />
+
+                        </View>
                     </View>
                 </View>
 
@@ -80,7 +96,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    plan: {
+    admin: {
         height: '95%',
         paddingTop: '5%',
         padding: 10

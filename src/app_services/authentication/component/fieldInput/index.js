@@ -11,6 +11,7 @@ const FieldInput = ({
   secureTextEntry,
   onFocus,
   onBlur,
+  keyboardType,
   ref,
   onSubmitEditing,
   getRef,
@@ -30,6 +31,7 @@ const FieldInput = ({
         ref={ref}
         getRef={getRef}
         onSubmitEditing={onSubmitEditing}
+        keyboardType={keyboardType ? keyboardType : 'text'}
       />
     </Item>
   );
