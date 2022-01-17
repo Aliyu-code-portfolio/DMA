@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-paper';
-import { continueReg, removeRequest } from '../app_services/authentication/network/user'
+import { updateRequest, removeRequest } from '../app_services/authentication/network/user'
 
 
-export const RequestCard = ({ navigation, data, internet }) => {
-    const [change, setChange] = useState(true)
+export const RequestCard = ({ data, internet }) => {
+    const [change, setChange] = useState(false)
 
     const finishReg = () => {
         if (internet) {
-            continueReg(data.name, data.email, data.password, data.phone, data.ethnic, data.title)
-                .then(() => { {/*removeRequest(data.id); navigation.replace("Login");*/ } }).catch((err) => { alert(err) })
+            updateRequest(data.id)
+                .then(() => { alert('Successfully added ' + data.title + ' ' + data.name + '.'); }).catch((err) => { alert('Failed to Register ' + data.title + ' ' + data.name); })
         }
         else {
             alert('Error: Unstable internet connection')

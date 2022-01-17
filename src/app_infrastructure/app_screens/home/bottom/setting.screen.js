@@ -14,22 +14,27 @@ import { clearAsyncStorage } from '../../../../app_services/authentication/async
 import { uuid } from '../../../../app_services/authentication/utility/constants'
 import { Avatar } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
+//import ImagePicker from 'react-native-image-crop-picker'
+
+import { storage } from '../../../../app_services/firebase_database/storage'
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const Setting = ({ navigation }) => {
     const globalState = useContext(Store);
     const { dispatchLoaderAction } = globalState;
-
     const [user, setUser] = useState(null);
     const [image, setImage] = useState()
 
     //Functions
     useEffect(() => {
         myData(useData)
+
     }, [])
 
     const useData = (info) => {
         setUser(info)
         setImage(info.profileImg)
+        //downloadFromStorage(info.profileImg)
     }
 
     const logout = () => {
@@ -37,43 +42,210 @@ export const Setting = ({ navigation }) => {
             .then(() => {
                 clearAsyncStorage()
                     .then(() => {
-                        props.navigation.replace("Login");
+                        navigation.replace("Login");
                     })
                     .catch((err) => console.log(err));
             })
             .catch((err) => console.log(err));
     };
 
-    const selectPhotoTapped = async () => {
+    //Firebase storage
 
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: [3, 3],
-            quality: 1,
+    uriToBlob = (uri) => {
+
+        return new Promise((resolve, reject) => {
+
+            const xhr = new XMLHttpRequest();
+
+            xhr.onload = function () {
+                // return the blob
+                resolve(xhr.response);
+            };
+
+            xhr.onerror = function () {
+                // something went wrong
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                reject(new Error('uriToBlob failed'));
+            };
+
+            // this helps us get a blob
+            xhr.responseType = 'blob';
+
+            xhr.open('GET', uri, true);
+            xhr.send(null);
+
         });
 
-        console.log(result);
+    }
 
-        if (!result.cancelled) {
+    uploadToFirebase = async (blob) => {
+
+        const profileImagesRef = ref(storage, `profilePictures/${user?.uuid}`);
+        const snapshot = await uploadBytes(profileImagesRef, blob).then((snapshot) => {
+
+            blob.close();
+
+        }).catch((error) => {
             dispatchLoaderAction({
-                type: LOADING_START,
+                type: LOADING_STOP,
             });
-            UpdateUser(uuid, result.uri)
-                .then(() => {
-                    setImage(result.uri);
-                    dispatchLoaderAction({
-                        type: LOADING_STOP,
-                    });
-                }).catch(() => {
-                    alert(err);
-                    dispatchLoaderAction({
-                        type: LOADING_STOP,
-                    });
-                });
+            console.log(error);
 
+        });
+
+    }
+
+    const downloadFromStorage = async () => {
+        const img = ref(storage, `profilePictures/${uuid}`);
+        getDownloadURL(img)
+            .then((url) => {
+                setImage(url)
+                UpdateUser(uuid, url)
+                    .catch(() => {
+                        alert(err);
+                        dispatchLoaderAction({
+                            type: LOADING_STOP,
+                        });
+                    });
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+            })
+            .catch((error) => {
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                // A full list of error codes is available at
+                // https://firebase.google.com/docs/storage/web/handle-errors
+                switch (error.code) {
+                    case 'storage/object-not-found':
+                        alert("File doesn't exist")
+                        break;
+                    case 'storage/unauthorized':
+                        alert("User doesn't have permission to access the object")
+                        break;
+                    case 'storage/canceled':
+                        alert("User canceled the upload")
+                        break;
+
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect the server response
+                        break;
+                }
+            });
+    }
+
+    const selectPhotoTapped = async (type) => {
+
+        if (type == 'media') {
+            // ImagePicker.openPicker({
+            //     width: 300,
+            //     height: 400,
+            //     cropping: false,
+            // }).then(async image => {
+            //     console.log(image)
+            //     let fileName = image.path.substring(image.path.lastIndexOf('/') + 1)
+            //     const extension = fileName.split('.').pop()
+
+            //     const profileImagesRef = ref(storage, `profilePictures/${user?.uuid}.${extension}`);
+            //     const snapshot = await uploadBytes(profileImagesRef, image.path)
+            // })
+            ImagePicker.launchImageLibraryAsync({
+                mediaTypes: "Images",
+                allowsEditing: true,
+                aspect: [3, 3],
+                quality: 1,
+            }).then((result) => {
+                if (!result.cancelled) {
+                    // User picked an image
+                    const { height, width, type, uri } = result;
+                    dispatchLoaderAction({
+                        type: LOADING_START,
+                    });
+                    return uriToBlob(uri)
+                }
+
+            }).then((blob) => {
+
+                return uploadToFirebase(blob);
+
+            }).then((snapshot) => {
+                downloadFromStorage()
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                console.log("File uploaded");
+
+            }).catch((error) => {
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                throw error;
+
+            });
 
         }
+
+
+        else if (type == 'cam') {
+
+            ImagePicker.launchCameraAsync().then((result) => {
+
+                if (!result.cancelled) {
+                    // User picked an image
+                    const { height, width, type, uri } = result;
+                    dispatchLoaderAction({
+                        type: LOADING_START,
+                    });
+                    return uriToBlob(uri);
+
+                }
+
+            }).then((blob) => {
+
+                return uploadToFirebase(blob);
+
+            }).then((snapshot) => {
+                downloadFromStorage()
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                console.log("File uploaded");
+
+
+            }).catch((error) => {
+                dispatchLoaderAction({
+                    type: LOADING_STOP,
+                });
+                throw error;
+
+            });
+
+        }
+
+
+
+
+        /////////////////////////////
+        //const task = storage().ref(fileName).putFile(uploadUrl)
+        //set transfer state //ux feature
+        // task.on('state_changed', taskSnapshot => {
+        //     console.log(`${taskSnapshot.bytesTransfered} transfered out of ${taskSnapshot.totalBytes}`)
+        // })
+        // try {
+        //     await task;
+        // }
+        // catch (e) {
+        //     console.log(e)
+
+        ///////////////////////////////////////////
+
+
+
+
+        //}
 
 
     };
@@ -117,7 +289,7 @@ export const Setting = ({ navigation }) => {
                     <View style={styles.line3}>
                         <Text style={{ marginLeft: '5%', color: '#828282', fontSize: 16 }}>Photo</Text>
                         <View style={{ justifyContent: 'center', paddingLeft: '30%', paddingTop: '10%', }}>
-                            <TouchableWithoutFeedback onPress={() => { user && (user.profileImg ? navigation.navigate('View', { name: user.name, img: user.profileImg }) : null) }}>
+                            <TouchableWithoutFeedback onPress={() => { user ? navigation.navigate('View', { name: user.name, img: image && image }) : null }}>
                                 <Avatar.Image
                                     source={{
                                         uri: image
@@ -126,7 +298,23 @@ export const Setting = ({ navigation }) => {
                                     style={{ alignContent: 'stretch', borderRadius: 40, backgroundColor: image ? 'transparent' : 'green' }}
                                 /></TouchableWithoutFeedback>
                             <TouchableOpacity style={{ flexDirection: 'column' }}
-                                onPress={() => selectPhotoTapped()}>
+                                onPress={() => {
+                                    Alert.alert(
+                                        "Choose",
+                                        "Select where to upload from",
+                                        [
+                                            {
+                                                text: "Camera",
+                                                onPress: () => selectPhotoTapped('cam'),
+                                            },
+                                            {
+                                                text: "Media",
+                                                onPress: () => selectPhotoTapped('media'),
+                                            },
+                                        ],
+                                        { cancelable: false }
+                                    )
+                                }}>
                                 <Ionicons
                                     name="create-outline"
                                     color='#0AA49A'

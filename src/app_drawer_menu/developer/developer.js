@@ -43,25 +43,25 @@ export const Developer = ({ navigation }) => {
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Implementing card payment feature on business website for online purchases</Text>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Managing of client website</Text>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for staffs only</Text>
-                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for customer</Text>
+                            <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Developing a business or company cross platform mobile application for customers</Text>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} setting up business custom mail address e.g support@dma.org (More professional) instead of dma@gmail.com,</Text>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5, color: 'grey' }}>{'\u2B24'} Periodical client system maintenance</Text>
-
+                            <View style={{}}>
+                                <View style={{ alignSelf: 'center' }}>
+                                    <Image
+                                        style={{ width: 45, height: 45 }}
+                                        source={require('../../../assets/logo.png')}
+                                    /></View>
+                                <View style={{ alignSelf: 'center' }}>
+                                    <Title>By</Title></View>
+                                <View style={{ alignSelf: 'center', paddingTop: 10 }}>
+                                    <Image
+                                        style={{ width: 90, height: 45 }}
+                                        source={require('../../../assets/dev.png')}
+                                    /></View>
+                            </View>
                         </ScrollView>
-                        <View style={{}}>
-                            <View style={{ alignSelf: 'center' }}>
-                                <Image
-                                    style={{ width: 45, height: 45 }}
-                                    source={require('../../../assets/logo.png')}
-                                /></View>
-                            <View style={{ alignSelf: 'center' }}>
-                                <Title>By</Title></View>
-                            <View style={{ alignSelf: 'center', paddingTop: 10 }}>
-                                <Image
-                                    style={{ width: 90, height: 45 }}
-                                    source={require('../../../assets/dev.png')}
-                                /></View>
-                        </View>
+
                     </View>
                 </View>
 

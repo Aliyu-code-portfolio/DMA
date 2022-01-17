@@ -27,7 +27,7 @@ export const TeamChatNav = () => {
             }}
         >
             <TeamChatStack.Screen name="Logo" component={LogoShow} options={{ headerShown: false }} />
-            <TeamChatStack.Screen name="Team Chat" component={TeamChat} options={{ headerBackTitle: null }} />
+            <TeamChatStack.Screen name="Team Chat" component={TeamChat} options={{ headerShown: false }} />
             <TeamChatStack.Screen name="View" component={ShowFullImg} options={{ headerShown: false }} />
 
         </TeamChatStack.Navigator>

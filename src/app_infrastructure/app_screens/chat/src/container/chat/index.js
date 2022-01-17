@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState, useEffect, Fragment } from "react";
+import React, { useLayoutEffect, useState, useEffect, Fragment, useContext } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  Alert
 } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -18,8 +19,14 @@ import firebase from "../../firebase/config";
 import { senderMsg, recieverMsg } from "../../network";
 import { deviceHeight } from "../../utility/styleHelper/appStyle";
 import { smallDeviceHeight } from "../../../../../../app_services/authentication/utility/constants";
+import { LOADING_START, LOADING_STOP } from '../../../../../../app_services/authentication/context/actions/type'
+import { Store } from "../../../../../../app_services/authentication/context/store"
+import { storage } from '../../../../../../app_services/firebase_database/storage'
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const Chat = ({ route, navigation }) => {
+  const globalState = useContext(Store);
+  const { dispatchLoaderAction } = globalState;
   const { params } = route;
   const { name, img, imgText, guestUserId, currentUserId } = params;
   const [msgValue, setMsgValue] = useState("");
@@ -54,6 +61,109 @@ const Chat = ({ route, navigation }) => {
     }
   }, []);
 
+
+  // Storage vitals
+  const uriToBlob = (uri) => {
+
+    return new Promise((resolve, reject) => {
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.onload = function () {
+        // return the blob
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function () {
+        // something went wrong
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+        reject(new Error('uriToBlob failed'));
+      };
+
+      // this helps us get a blob
+      xhr.responseType = 'blob';
+
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+
+    });
+
+  }
+
+  const uploadToFirebase = async (blob) => {
+    let fileName = Date.now() + Math.random()
+    console.log(fileName)
+    const profileImagesRef = ref(storage, `messages/${fileName}`);
+    const snapshot = await uploadBytes(profileImagesRef, blob).then((snapshot) => {
+      downloadFromStorage(fileName)
+      blob.close();
+
+    }).catch((error) => {
+      dispatchLoaderAction({
+        type: LOADING_STOP,
+      });
+      console.log(error);
+
+    });
+
+  }
+
+  const downloadFromStorage = async (file) => {
+    const img = ref(storage, `messages/${file}`);
+    getDownloadURL(img)
+      .then((url) => {
+        senderMsg(msgValue, currentUserId, guestUserId, url)
+          .then(() => { })
+          .catch((err) => {
+            dispatchLoaderAction({
+              type: LOADING_STOP,
+            });
+            alert(err)
+          });
+
+        // * guest user
+
+        recieverMsg(msgValue, currentUserId, guestUserId, url)
+          .then(() => { })
+          .catch((err) => {
+            dispatchLoaderAction({
+              type: LOADING_STOP,
+            });
+            alert(err)
+          });
+
+
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+      })
+      .catch((error) => {
+        alert("Error")
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/object-not-found':
+            alert("File doesn't exist")
+            break;
+          case 'storage/unauthorized':
+            alert("User doesn't have permission to access the object")
+            break;
+          case 'storage/canceled':
+            alert("User canceled the upload")
+            break;
+
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
+            break;
+        }
+      });
+  }
+
   const handleSend = () => {
     setMsgValue("");
     if (msgValue) {
@@ -69,29 +179,84 @@ const Chat = ({ route, navigation }) => {
     }
   };
 
-  const handleCamera = async () => {
+  const handleCamera = async (type) => {
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    if (type == 'media') {
+      ImagePicker.launchImageLibraryAsync({
+        mediaTypes: "Images",
+        allowsEditing: true,
+        aspect: [3, 3],
+        quality: 1,
+      }).then((result) => {
+        if (!result.cancelled) {
+          // User picked an image
+          const { height, width, type, uri } = result;
 
+          dispatchLoaderAction({
+            type: LOADING_START,
+          });
+          return uriToBlob(uri)
+        }
 
-    if (!result.cancelled) {
-      senderMsg(msgValue, currentUserId, guestUserId, result.uri)
-        .then(() => { })
-        .catch((err) => alert(err));
+      }).then((blob) => {
 
-      // * guest user
+        return uploadToFirebase(blob);
 
-      recieverMsg(msgValue, currentUserId, guestUserId, result.uri)
-        .then(() => { })
-        .catch((err) => alert(err));
+      }).then((snapshot) => {
 
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+        console.log("File uploaded");
+
+      }).catch((error) => {
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+        throw error;
+
+      });
 
     }
+
+
+    else if (type == 'cam') {
+
+      ImagePicker.launchCameraAsync().then((result) => {
+
+        if (!result.cancelled) {
+          // user picked an image
+          const { height, width, type, uri } = result;
+          dispatchLoaderAction({
+            type: LOADING_START,
+          });
+          return uriToBlob(uri);
+
+        }
+
+      }).then((blob) => {
+        console.log(fileName)
+        return uploadToFirebase(blob);
+
+      }).then((snapshot) => {
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+        console.log("File uploaded");
+
+
+      }).catch((error) => {
+        dispatchLoaderAction({
+          type: LOADING_STOP,
+        });
+        throw error;
+
+      });
+
+    }
+
+
+
   };
 
   const handleOnChange = (text) => {
@@ -142,7 +307,23 @@ const Chat = ({ route, navigation }) => {
                   name="camera"
                   color={color.WHITE}
                   size={appStyle.fieldHeight}
-                  onPress={() => handleCamera()}
+                  onPress={() => {
+                    Alert.alert(
+                      "Choose",
+                      "Select where to upload from",
+                      [
+                        {
+                          text: "Camera",
+                          onPress: () => handleCamera('cam'),
+                        },
+                        {
+                          text: "Media",
+                          onPress: () => handleCamera('media'),
+                        },
+                      ],
+                      { cancelable: false }
+                    )
+                  }}
                 />
                 <MaterialCommunityIcons
                   name="send-circle"

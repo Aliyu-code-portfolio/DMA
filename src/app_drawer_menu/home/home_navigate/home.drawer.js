@@ -14,15 +14,15 @@ export const HomeDrawer = () => {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
-                    if (route.name === 'Home Page') {
+                    if (route.name === 'Home') {
                         iconName = 'home';
-                    } else if (route.name === 'Search Page') {
+                    } else if (route.name === 'Search') {
                         iconName = 'search1';
                     }
-                    else if (route.name === 'Reminder Page') {
+                    else if (route.name === 'Reminder') {
                         iconName = 'bells';
                     }
-                    else if (route.name === 'Settings Page') {
+                    else if (route.name === 'Settings') {
                         iconName = 'setting';
                     }
 
@@ -33,7 +33,7 @@ export const HomeDrawer = () => {
                 tabBarInactiveTintColor: 'gray',
             })}
         >
-            <Tab.Screen name="Home Page" component={Home} options={{ headerShown: false }} />
+            <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
             {/*use inside screen //options={{
                 title: 'Welcome',
                 headerStyle: {
@@ -43,9 +43,9 @@ export const HomeDrawer = () => {
                 headerTitleStyle: {
                     fontWeight: 'bold',
                 }, */}
-            <Tab.Screen name="Search Page" component={Search} options={{ headerShown: false }} />
-            <Tab.Screen name="Reminder Page" component={App} options={{ headerShown: false }} />
-            <Tab.Screen name="Settings Page" component={SettingNav} options={{ headerShown: false }} />
+            <Tab.Screen name="Search" component={Search} options={{ headerShown: false }} />
+            <Tab.Screen name="Reminder" component={App} options={{ headerShown: false }} />
+            <Tab.Screen name="Settings" component={SettingNav} options={{ headerShown: false }} />
         </Tab.Navigator>
     );
 }

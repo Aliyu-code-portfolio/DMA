@@ -31,7 +31,7 @@ const FieldInput = ({
         ref={ref}
         getRef={getRef}
         onSubmitEditing={onSubmitEditing}
-        keyboardType={keyboardType ? keyboardType : 'text'}
+        keyboardType={keyboardType ? keyboardType : 'default'}
       />
     </Item>
   );

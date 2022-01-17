@@ -14,6 +14,7 @@ export default ({
   onBlur,
   onFocus,
   numberOfLines,
+  keyboardType,
 }) => (
   <TextInput
     style={[styles.input, inputStyle]}
@@ -28,5 +29,6 @@ export default ({
     onSubmitEditing={onSubmitEditing}
     onBlur={onBlur}
     onFocus={onFocus}
+    keyboardType={keyboardType ? keyboardType : 'default'}
   />
 );

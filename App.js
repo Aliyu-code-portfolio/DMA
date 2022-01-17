@@ -1,6 +1,8 @@
 import firebase from 'firebase/compat/app';
 //import 'firebase/compat/auth'; //check stack overflow for change on v9 of firebase
 import 'firebase/compat/firestore';
+import { getStorage } from "firebase/storage";
+
 import React, { useState, useEffect, createContext } from 'react';
 import { Text, View, StatusBar } from 'react-native';
 import 'react-native-gesture-handler';
@@ -52,10 +54,12 @@ export default function App() {
     storageBucket: "dma-5c98f.appspot.com",
     messagingSenderId: "601101583020",
     appId: "1:601101583020:web:08fcb8e80fa3e898fe9509",
-    measurementId: "G-8T01HY2VVN"
+    measurementId: "G-8T01HY2VVN",
+    storageBucket: "gs://dma-5c98f.appspot.com"
+
   };
   if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+    const firebaseApp = firebase.initializeApp(firebaseConfig);
   }
 
   const [oswaldLoaded] = useOswald({

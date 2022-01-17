@@ -7,6 +7,8 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  ImageBackground,
+  Dimensions
 } from "react-native";
 import { getAuth, } from "firebase/auth";
 import uuid from 'react-native-uuid';
@@ -20,6 +22,9 @@ import {
   keyboardVerticalOffset,
 } from "../../utility/constants";
 import { AddRequest } from "../../network/user";
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default ({ navigation }) => {
   const globalState = useContext(Store);
@@ -59,6 +64,9 @@ export default ({ navigation }) => {
     else if (!phone) {
       alert("Phone number is required");
     }
+    else if (password.length < 6) {
+      alert("Password must be at least six characters")
+    }
     else if (password !== confirmPassword) {
       alert("Password did not match");
     } else {
@@ -67,7 +75,7 @@ export default ({ navigation }) => {
       });
       const id = uuid.v4();
       let profileImg = ''
-      AddRequest(name, email, id, profileImg, phone, ethnic, title).then(() => {
+      AddRequest(name, email, password, id, profileImg, phone, ethnic, title).then(() => {
         dispatchLoaderAction({
           type: LOADING_STOP,
         });
@@ -81,36 +89,7 @@ export default ({ navigation }) => {
         alert(err);
       })
 
-      // dispatchLoaderAction({
-      //   type: LOADING_START,
-      // });
-      // SignUpRequest(email, password)
-      //   .then((res) => {
-      //     let auth = getAuth()
-      //     let uid = auth.currentUser.uid;
-      //     let profileImg = "";
-      //     AddUser(name, email, uid, profileImg, phone, ethnic, title,)
-      //       .then(() => {
-      //         setAsyncStorage(keys.uuid, uid);
-      //         setUniqueValue(uid);
-      //         dispatchLoaderAction({
-      //           type: LOADING_STOP,
-      //         });
-      //         navigation.replace("Dashboard");
-      //       })
-      //       .catch((err) => {
-      //         dispatchLoaderAction({
-      //           type: LOADING_STOP,
-      //         });
-      //         alert(err);
-      //       });
-      //   })
-      //   .catch((err) => {
-      //     dispatchLoaderAction({
-      //       type: LOADING_STOP,
-      //     });
-      //     alert(err);
-      //   });
+
     }
   };
   // * HANDLE ON CHANGE
@@ -141,18 +120,17 @@ export default ({ navigation }) => {
       style={[globalStyle.flex1, { backgroundColor: color.BLACK }]}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: color.BLACK }}>
-          {logo && (
-            <View style={[globalStyle.containerCentered, { height: '30%' }]}>
-              <Text style={{
-                fontSize: 28,
-                fontWeight: "bold",
-                color: color.LIGHT_GREEN,
-              }}>SIGN UP</Text>
-            </View>
-          )}
+        <SafeAreaView style={{ flex: 1, backgroundColor: color.GREEN }}>
+          <View style={{ height: '30%', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 50, color: 'white', fontFamily: 'Oswald_400Regular' }}>DMA</Text>
+            <Text style={{ fontSize: 14, color: 'white', fontStyle: 'italic' }}> By DR. MUSA ADAMU</Text>
+
+          </View>
+
           <ScrollView style={{ height: '60%' }}>
-            <View style={[globalStyle.flex2, globalStyle.sectionCentered]}>
+
+            <View style={[globalStyle.flex2, globalStyle.sectionCentered, { borderTopRightRadius: 40, borderTopLeftRadius: 40, backgroundColor: 'white', elevation: 80 }]}>
+              <View style={{ paddingBottom: 30 }} />
               <InputField
                 placeholder="Title: Mr. Mal. Hon. Dr. Engr"
                 value={title}
@@ -173,6 +151,7 @@ export default ({ navigation }) => {
                 onChangeText={(text) => handleOnChange("email", text)}
                 onFocus={() => handleFocus()}
                 onBlur={() => handleBlur()}
+                keyboardType='email-address'
               />
               <InputField
                 placeholder="Enter phone"
@@ -212,7 +191,7 @@ export default ({ navigation }) => {
               />
               <Text
                 style={{
-                  fontSize: 28,
+                  fontSize: 20,
                   fontWeight: "bold",
                   color: color.LIGHT_GREEN,
                 }}

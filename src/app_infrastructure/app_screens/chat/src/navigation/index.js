@@ -20,7 +20,7 @@ function NavContainer() {
       initialRouteName="Splash"
       screenOptions={{
         headerShown: true,
-        headerStyle: { backgroundColor: 'white', color: 'black' },
+        headerStyle: { backgroundColor: 'white', },
         headerTitleStyle: {
           fontWeight: "bold",
           fontSize: 20,
@@ -39,14 +39,12 @@ function NavContainer() {
         name="DMA Chat"
         component={Dashboard}
         options={{
-          headerLeft: null,
         }}
       />
       <Stack.Screen
         name="Show Full Img"
         component={ShowFullImg}
         options={{
-          headerBackTitle: null,
           headerTitle: ''
         }}
       />
@@ -54,7 +52,6 @@ function NavContainer() {
         name="Chat"
         component={Chat}
         options={{
-          headerBackTitle: null,
         }}
       />
     </Stack.Navigator>

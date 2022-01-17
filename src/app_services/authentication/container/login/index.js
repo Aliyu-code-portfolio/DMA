@@ -6,6 +6,8 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  Image,
+  Dimensions
 } from "react-native";
 ("react-native-keyboard-aware-scroll-view");
 import { InputField, RoundCornerButton, Logo } from "../../component";
@@ -18,6 +20,10 @@ import {
   keyboardVerticalOffset,
 } from "../../utility/constants";
 import { LoginRequest } from "../../network";
+
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default ({ navigation }) => {
   const globalState = useContext(Store);
@@ -72,7 +78,7 @@ export default ({ navigation }) => {
           dispatchLoaderAction({
             type: LOADING_STOP,
           });
-          alert(err);
+          //alert(err.toString());
         });
     }
   };
@@ -91,27 +97,37 @@ export default ({ navigation }) => {
     }, 200);
   };
   return (
+
     <KeyboardAvoidingView
       keyboardVerticalOffset={keyboardVerticalOffset}
       behavior={Platform.OS == "ios" ? "padding" : "height"}
-      style={[globalStyle.flex1, { backgroundColor: color.WHITE }]}
+      style={[globalStyle.flex1, { backgroundColor: color.GREEN }]}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
         <SafeAreaView
-          style={[globalStyle.flex1, { backgroundColor: color.WHITE }]}
+          style={[globalStyle.flex1, { backgroundColor: color.GREEN }]}
         >
-          {logo && (
-            <View style={[globalStyle.containerCentered]}>
-              <Logo />
-            </View>
-          )}
-          <View style={[globalStyle.flex2, globalStyle.sectionCentered]}>
+          <View style={{ height: '30%', justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ fontSize: 60, color: 'white', fontFamily: 'Oswald_400Regular', paddingBottom: -20 }}>DMA</Text>
+            <Text style={{ fontSize: 14, color: 'white', fontStyle: 'italic' }}> By DR. MUSA ADAMU</Text>
+
+          </View>
+
+          {/* {logo && (
+              <View style={[globalStyle.containerCentered]}>
+                <Logo />
+              </View>
+            )} */}
+          <View style={[globalStyle.flex2, globalStyle.sectionCentered, { borderTopRightRadius: 40, borderTopLeftRadius: 40, backgroundColor: 'white', elevation: 80 }]}>
+            <Text style={{ fontFamily: 'Oswald_400Regular', fontSize: 24, paddingBottom: 10, }}>Let's login</Text>
             <InputField
               placeholder="Enter email"
               value={email}
               onChangeText={(text) => handleOnChange("email", text)}
               onFocus={() => handleFocus()}
               onBlur={() => handleBlur()}
+              keyboardType='email-address'
             />
             <InputField
               placeholder="Enter password"
@@ -125,7 +141,7 @@ export default ({ navigation }) => {
             <RoundCornerButton title="Login" onPress={() => onLoginPress()} />
             <Text
               style={{
-                fontSize: 28,
+                fontSize: 20,
                 fontWeight: "bold",
                 color: color.LIGHT_GREEN,
               }}
