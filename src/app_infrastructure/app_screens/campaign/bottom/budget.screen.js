@@ -26,6 +26,9 @@ export const Budgets = ({ navigation }) => {
 
     // Functions
 
+    function formatToCurrency(amount) {
+        return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
 
     const networkBack = () => {
         budget(retrieveDatabaseData)
@@ -111,7 +114,7 @@ export const Budgets = ({ navigation }) => {
                             </View></>
 
                         <View style={{ height: '5%', position: 'absolute', right: 0, bottom: 0, paddingRight: '5%' }}>
-                            <Text style={{ fontSize: 16, fontFamily: 'Oswald_400Regular', }}>Total: ₦{total}</Text>
+                            <Text style={{ fontSize: 16, fontFamily: 'Oswald_400Regular', }}>Total: ₦{formatToCurrency(total)}</Text>
                         </View>
                     </View>
                 </View>

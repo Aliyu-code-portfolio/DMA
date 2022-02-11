@@ -60,7 +60,8 @@ export const About = ({ navigation }) => {
                 <View style={styles.greetingContainer}>
                     <View style={styles.developer}>
                         {para1 ? <ScrollView showsVerticalScrollIndicator={false} style={{ height: '45%', width: '100%' }}>
-                            <Title>Dr. Musa Adamu (DMA)</Title>
+                            <Image source={require('../../../../assets/about.png')} style={{ width: '100%', height: '40%', justifyContent: 'center', alignSelf: 'center' }} />
+                            <Title style={{ alignSelf: 'center' }}>Dr. Musa Adamu (DMA)</Title>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, color: 'grey' }}>{para1 && para1.text}</Text>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 10, marginBottom: 5, fontWeight: 'bold', color: 'green' }}>Highlights </Text>
                             <Text style={{ fontFamily: 'Lato_400Regular', fontSize: 16, marginTop: 5 }}>{para2 && para2.text1}</Text>

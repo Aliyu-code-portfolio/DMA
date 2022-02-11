@@ -68,28 +68,29 @@ export function DrawerTemplete(props) {
             <View style={{ flex: 1, backgroundColor: isDarkTheme ? '#000003' : '#FFFFFF', color: isDarkTheme ? 'white' : '#000003' }}>
                 <DrawerContentScrollView {...props} >
                     <View style={styles.drawerContent}>
-                        <View style={styles.userInfoSection}>
-                            <View style={{ flexDirection: 'row', marginTop: 15 }}>
-                                <Avatar.Image
-                                    source={{
-                                        uri: image
-                                    }}
-                                    size={70}
-                                    style={{ backgroundColor: image ? 'transparent' : 'green' }}
-                                />
-                                <View style={{ marginLeft: 15, flexDirection: 'column', justifyContent: 'center', }}>
-                                    <Title style={styles.title}>{user && user.name}</Title>
-                                    <Caption style={styles.caption}>{user && (user.admin ? 'Management' : 'Member')}</Caption>
+                        <Drawer.Section title="My Profile">
+                            <View style={styles.userInfoSection}>
+                                <View style={{ flexDirection: 'row', marginTop: 15 }}>
+                                    <Avatar.Image
+                                        source={{
+                                            uri: image
+                                        }}
+                                        size={70}
+                                        style={{ backgroundColor: image ? 'transparent' : 'green', borderWidth: 1 }}
+                                    />
+                                    <View style={{ marginLeft: 15, flexDirection: 'column', justifyContent: 'center', }}>
+                                        <Title style={styles.title}>{user && user.name}</Title>
+                                        <Caption style={styles.caption}>{user && (user.admin ? 'Management' : 'Member')}</Caption>
+                                    </View>
+                                </View>
+
+                                <View style={styles.row}>
+                                    <View style={styles.section}>
+
+                                    </View>
                                 </View>
                             </View>
-
-                            <View style={styles.row}>
-                                <View style={styles.section}>
-
-                                </View>
-                            </View>
-                        </View>
-
+                        </Drawer.Section>
                         <Drawer.Section style={styles.drawerSection}>
                             <DrawerItem
                                 icon={({ color, size }) => (
@@ -201,7 +202,7 @@ export function DrawerTemplete(props) {
                         onPress={() => {
                             Alert.alert(
                                 "Logout",
-                                "Are you sure to log out",
+                                "Are you sure to log out?",
                                 [
                                     {
                                         text: "Yes",

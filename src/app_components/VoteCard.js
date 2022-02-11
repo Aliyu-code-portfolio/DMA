@@ -151,7 +151,7 @@ export const VoteCard = ({ data, refresh, internet }) => {
                             <View style={{ marginLeft: 11, alignItems: 'center', }}>
                                 <Text
                                     style={{
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         color: 'black',
                                         fontWeight: 'bold',
                                         fontFamily: 'Lato_400Regular',
@@ -162,7 +162,7 @@ export const VoteCard = ({ data, refresh, internet }) => {
                                     style={{
                                         marginTop: 4,
                                         borderWidth: 0,
-                                        width: '85%',
+                                        width: '100%',
                                     }}>
                                     <Text
                                         style={{

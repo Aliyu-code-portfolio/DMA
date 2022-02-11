@@ -269,7 +269,7 @@ export const Setting = ({ navigation }) => {
                                 size={30}
                                 onPress={() => Alert.alert(
                                     "Logout",
-                                    "Are you sure to log out",
+                                    "Are you sure to log out?",
                                     [
                                         {
                                             text: "Yes",
@@ -295,7 +295,7 @@ export const Setting = ({ navigation }) => {
                                         uri: image
                                     }}
                                     size={110}
-                                    style={{ alignContent: 'stretch', borderRadius: 40, backgroundColor: image ? 'transparent' : 'green' }}
+                                    style={{ alignContent: 'stretch', borderWidth: 1, borderRadius: 40, backgroundColor: image ? 'transparent' : 'green' }}
                                 /></TouchableWithoutFeedback>
                             <TouchableOpacity style={{ flexDirection: 'column' }}
                                 onPress={() => {

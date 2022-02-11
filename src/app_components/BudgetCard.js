@@ -8,6 +8,10 @@ export const BudgetCard = ({ data, refresh, internet }) => {
     const [change, setChange] = useState(false)
     const [newCost, setNewCost] = useState(null)
 
+    function formatToCurrency(amount) {
+        return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    }
+
     //Functions
 
     const finished = () => {
@@ -107,7 +111,7 @@ export const BudgetCard = ({ data, refresh, internet }) => {
                                 justifyContent: 'center',
                                 borderRadius: 50,
                             }}>
-                            <Text style={{ color: 'white' }}>₦{data.Cost}</Text>
+                            <Text style={{ color: 'white' }}>₦{formatToCurrency(data.Cost)}</Text>
                         </View></>}
             </View>
         </TouchableWithoutFeedback>

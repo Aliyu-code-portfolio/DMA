@@ -21,7 +21,7 @@ export default ({ navigation }) => {
           console.log(err);
           navigation.replace('Login');
         });
-    }, 4000);
+    }, 1000);
     return () => clearTimeout(redirect);
   }, [navigation]);
   return (
