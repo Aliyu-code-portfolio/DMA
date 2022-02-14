@@ -211,3 +211,17 @@ export const budgetTotal = async (send) => {
     })
     send(total)
 }
+
+export const postEvent = (name, venue, lga, date, time) => {
+    firebase.firestore().collection('publicData').doc('event').set({
+        name: name,
+        lga: lga,
+        venue: venue,
+        date: date,
+        time: time,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+
+    })
+    alert('Success')
+}
